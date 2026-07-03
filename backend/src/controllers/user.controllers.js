@@ -1,0 +1,147 @@
+import db from "../database/db.js";
+import bcrypt from "bcryptjs";
+import generateToken from "../utils/generateToken.js";
+
+export const getMe = async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT id, firstname, lastname, email FROM users WHERE id = $1",
+      [req.userId],
+    );
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error in getMe:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const registerUser = async (req, res) => {
+  // let take the date from the body
+  try {
+    const { firstname, lastname, email, password, confirm_password } = req.body;
+
+    if (!firstname || !lastname || !email || !password || !confirm_password) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    // check if user already exists
+    try {
+      const query = "SELECT * FROM users WHERE email = $1";
+      const values = [email];
+      const result = await db.query(query, values);
+      if (result.rows.length > 0) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+    } catch (error) {
+      console.error("Database error in registerUser:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+
+    // email verification
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: "Please enter a valid email address" });
+    }
+
+    // password verification
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 8 characters long and contain at least one letter, one number, and one special character",
+      });
+    }
+
+    if (password !== confirm_password) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // hashing the password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedConfirmPassword = await bcrypt.hash(
+      confirm_password,
+      saltRounds,
+    );
+
+    // TODO : modify the navbar tomorrow
+
+    try {
+      const walletBalance = 2; // Initialize wallet balance for new users
+      const query =
+        "INSERT INTO users (firstname, lastname, email, password, confirm_password, wallet_balance) VALUES ($1, $2, $3, $4, $5, $6) RETURNING firstname, lastname, email, wallet_balance";
+      const values = [
+        firstname,
+        lastname,
+        email,
+        hashedPassword,
+        hashedConfirmPassword,
+        walletBalance,
+      ];
+      const result = await db.query(query, values);
+      res.status(201).json({
+        message: "User registered successfully",
+        user: result.rows[0],
+      });
+    } catch (error) {
+      console.error("Database error in registerUser:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  } catch (error) {
+    console.error("Error in registerUser:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    try {
+      const query = "SELECT * FROM users WHERE email = $1";
+      const values = [email];
+      const result = await db.query(query, values);
+      if (result.rows.length === 0) {
+        return res.status(401).json({
+          message: "Email not found. Please register first.",
+        });
+      }
+      const user = result.rows[0];
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      const {
+        password: _,
+        confirm_password: __,
+        ...userWithoutPassword
+      } = user;
+
+      // generate token
+      const token = generateToken(user.id, res);
+
+      res
+        .status(200)
+        .json({ message: "Login successful", user: userWithoutPassword });
+    } catch (error) {
+      console.error("Error in loginUser:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  } catch (error) {
+    console.error("Error in loginUser:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("jwt");
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error in logoutUser:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
