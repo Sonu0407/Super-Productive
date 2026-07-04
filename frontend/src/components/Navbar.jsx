@@ -1,12 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const [walletBalance, setWalletBalance] = useState(null);
   const navigate = useNavigate();
   const { checkAuth } = useContext(AuthContext);
+
+  useEffect(() => {
+    getWalletBalance();
+  }, []);
+
+  const getWalletBalance = async () => {
+    try {
+      const url = "http://localhost:8000/api/tasks/wallet";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Something went wrong");
+      }
+
+      setWalletBalance(data.wallet_balance);
+    } catch (error) {
+      console.error("Error in getWalletBalance:", error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -55,7 +80,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-6">
         <div className="bg-amber-50 dark:bg-[#f8eedb] text-amber-700 dark:text-[#c96b1c] px-5 py-3 rounded-full font-semibold">
-          $4.50 earned
+          ${walletBalance ? walletBalance : "0"} earned
         </div>
 
         <button

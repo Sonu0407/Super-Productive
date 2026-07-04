@@ -70,7 +70,7 @@ export const registerUser = async (req, res) => {
     // TODO : modify the navbar tomorrow
 
     try {
-      const walletBalance = 2; // Initialize wallet balance for new users
+      const walletBalance = 2.0; // Initialize wallet balance for new users
       const query =
         "INSERT INTO users (firstname, lastname, email, password, confirm_password, wallet_balance) VALUES ($1, $2, $3, $4, $5, $6) RETURNING firstname, lastname, email, wallet_balance";
       const values = [

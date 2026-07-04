@@ -79,10 +79,32 @@ const FocusTimer = () => {
   const MAX_MINUTES = 60;
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
-  const safeMinutes = Math.min(currentTask.focus_session, MAX_MINUTES);
+  const safeMinutes = Math.min(currentTask?.focus_session || 0, MAX_MINUTES);
   const progress = safeMinutes / MAX_MINUTES;
   const totalProgress = circumference * progress;
-  const strokeDashoffset = Math.floor(circumference - totalProgress);
+
+  console.log(circumference);
+  console.log(totalProgress);
+
+  const [strokeDashoffset, setStrokeDashoffset] = useState();
+
+  useEffect(() => {
+    setStrokeDashoffset(Math.floor(circumference - totalProgress));
+  }, [totalProgress]);
+
+  console.log(strokeDashoffset);
+
+  const handleStartTimer = () => {
+    const interval = setInterval(() => {
+      setStrokeDashoffset((prevOffset) => {
+        if (prevOffset === 263) {
+          clearInterval(interval);
+          return circumference;
+        }
+        return prevOffset + 1;
+      });
+    }, 1000);
+  };
 
   console.log(strokeDashoffset);
 
@@ -207,7 +229,10 @@ const FocusTimer = () => {
           </button> */}
           {/* not required now change later */}
 
-          <button className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition">
+          <button
+            onClick={handleStartTimer}
+            className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
+          >
             Start
           </button>
 

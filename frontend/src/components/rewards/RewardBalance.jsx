@@ -1,4 +1,32 @@
+import { useEffect } from "react";
+import { useState } from "react";
+
 const RewardBalance = () => {
+  const [walletBalance, setWalletBalance] = useState(null);
+
+  useEffect(() => {
+    getWalletBalance();
+  }, []);
+
+  const getWalletBalance = async () => {
+    try {
+      const url = "http://localhost:8000/api/tasks/wallet";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Something went wrong");
+      }
+
+      setWalletBalance(data.wallet_balance);
+    } catch (error) {
+      console.error("Error in getWalletBalance:", error);
+    }
+  };
   return (
     <div
       className="
@@ -19,7 +47,9 @@ const RewardBalance = () => {
             Available balance
           </p>
 
-          <h2 className="mt-2 text-6xl font-bold text-amber-900">$4.50</h2>
+          <h2 className="mt-2 text-6xl font-bold text-amber-900">
+            ${walletBalance ? walletBalance : 0}
+          </h2>
         </div>
 
         {/* Right */}
