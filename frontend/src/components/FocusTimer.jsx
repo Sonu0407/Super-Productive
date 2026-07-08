@@ -4,9 +4,11 @@ import { IoReloadCircle } from "react-icons/io5";
 
 const FocusTimer = () => {
   const [currentTask, setCurrentTask] = useState("");
+  const [focusSession, setFocusSession] = useState(0);
   const [getAllTask, setGetAllTask] = useState([]);
   const [reloading, setReloading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const [seconds, setSeconds] = useState(59);
 
   useEffect(() => {
     getAllTasks();
@@ -67,6 +69,7 @@ const FocusTimer = () => {
       }
 
       setCurrentTask(data.task);
+      setFocusSession(data.task.focus_session);
       console.log(data.task);
     } catch (error) {
       console.log("Error in getCurrentTaskDetails:", error);
@@ -82,6 +85,7 @@ const FocusTimer = () => {
   const safeMinutes = Math.min(currentTask?.focus_session || 0, MAX_MINUTES);
   const progress = safeMinutes / MAX_MINUTES;
   const totalProgress = circumference * progress;
+  const SECONDS_PER_SESSION = 59; // or whatever your session length is
 
   console.log(circumference);
   console.log(totalProgress);
@@ -102,6 +106,25 @@ const FocusTimer = () => {
           return circumference;
         }
         return prevOffset + 1;
+      });
+    }, 1000);
+  };
+
+  const handleSeconds = () => {
+    console.log(focusSession);
+    const interval = setInterval(() => {
+      setSeconds((prevSeconds) => {
+        if (prevSeconds === 0) {
+          setFocusSession((prevFocus) => {
+            if (prevFocus <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prevFocus - 1;
+          });
+          return SECONDS_PER_SESSION;
+        }
+        return prevSeconds - 1;
       });
     }, 1000);
   };
@@ -212,7 +235,8 @@ const FocusTimer = () => {
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <h1 className="text-4xl lg:text-5xl font-bold dark:text-[#f5f5f5]">
-                {currentTask?.focus_session ?? "00"}:00
+                {focusSession ? focusSession : "00"}:
+                {seconds < 10 ? `0${seconds}` : seconds}
               </h1>
 
               <p className="text-gray-400 dark:text-[#b0b0b0] text-base mt-1">
@@ -230,7 +254,10 @@ const FocusTimer = () => {
           {/* not required now change later */}
 
           <button
-            onClick={handleStartTimer}
+            onClick={() => {
+              handleStartTimer();
+              handleSeconds();
+            }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
             Start
