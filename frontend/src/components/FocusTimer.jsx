@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RewardCard from "./RewardCard";
 import { IoReloadCircle } from "react-icons/io5";
 
@@ -8,7 +8,7 @@ const FocusTimer = () => {
   const [getAllTask, setGetAllTask] = useState([]);
   const [reloading, setReloading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  const [seconds, setSeconds] = useState(59);
+  // const [seconds, setSeconds] = useState(60);
 
   useEffect(() => {
     getAllTasks();
@@ -70,22 +70,57 @@ const FocusTimer = () => {
 
       setCurrentTask(data.task);
       setFocusSession(data.task.focus_session);
+      // setSeconds(60);
       console.log(data.task);
     } catch (error) {
       console.log("Error in getCurrentTaskDetails:", error);
     }
   };
 
-  console.log(currentTask);
+  const [timeLeft, setTimeLeft] = useState(focusSession * 60); // pass the time in the seconds to reformat it later
+  const [isRunning, setIsRunning] = useState(false);
+  const intervalRef = useRef(null);
 
-  // calculating the time
+  useEffect(() => {
+    setTimeLeft(focusSession * 60);
+  }, [focusSession]);
+
+  // function to format time
+  function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600); // 0 hrs
+    const mins = Math.floor((seconds % 3600) / 60); // we are getting correct answer here
+    const sec = seconds % 60;
+
+    // return in the format
+    return `${hrs > 0 ? String(hrs).padStart(2, "0") + ":" : ""}${String(mins).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  }
+
+  useEffect(() => {
+    if (isRunning) {
+      intervalRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(intervalRef.current);
+            setIsRunning(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [isRunning]);
+
+  // calculating the circle
   const MAX_MINUTES = 60;
   const radius = 42;
   const circumference = 2 * Math.PI * radius;
   const safeMinutes = Math.min(currentTask?.focus_session || 0, MAX_MINUTES);
   const progress = safeMinutes / MAX_MINUTES;
   const totalProgress = circumference * progress;
-  const SECONDS_PER_SESSION = 59; // or whatever your session length is
 
   console.log(circumference);
   console.log(totalProgress);
@@ -96,38 +131,45 @@ const FocusTimer = () => {
     setStrokeDashoffset(Math.floor(circumference - totalProgress));
   }, [totalProgress]);
 
-  console.log(strokeDashoffset);
+  // console.log(strokeDashoffset);
 
-  const handleStartTimer = () => {
-    const interval = setInterval(() => {
-      setStrokeDashoffset((prevOffset) => {
-        if (prevOffset === 263) {
-          clearInterval(interval);
-          return circumference;
-        }
-        return prevOffset + 1;
-      });
-    }, 1000);
-  };
+  // const handleStartTimer = () => {
+  //   const interval = setInterval(() => {
+  //     setStrokeDashoffset((prevOffset) => {
+  //       if (prevOffset === 263) {
+  //         clearInterval(interval);
+  //         return circumference;
+  //       }
+  //       return prevOffset + 1;
+  //     });
+  //   }, 1000);
+  // };
 
-  const handleSeconds = () => {
-    console.log(focusSession);
-    const interval = setInterval(() => {
-      setSeconds((prevSeconds) => {
-        if (prevSeconds === 0) {
-          setFocusSession((prevFocus) => {
-            if (prevFocus <= 1) {
-              clearInterval(interval);
-              return 0;
-            }
-            return prevFocus - 1;
-          });
-          return SECONDS_PER_SESSION;
-        }
-        return prevSeconds - 1;
-      });
-    }, 1000);
-  };
+  // const handleSeconds = () => {
+  //   if (timerId) return; // already running
+
+  //   const interval = setInterval(() => {
+  //     setSeconds((prevSeconds) => {
+  //       if (prevSeconds < 1) {
+  //         setFocusSession((prevFocus) => {
+  //           if (prevFocus <= 0) {
+  //             clearInterval(interval);
+  //             setTimerId(null);
+  //             return 0;
+  //           }
+
+  //           return prevFocus - 1;
+  //         });
+
+  //         return SECONDS_PER_SESSION;
+  //       }
+
+  //       return prevSeconds - 1;
+  //     });
+  //   }, 500);
+
+  //   setTimerId(interval);
+  // };
 
   console.log(strokeDashoffset);
 
@@ -165,6 +207,7 @@ const FocusTimer = () => {
             // onClick={getCurrentTaskDetails}
             onChange={(e) => {
               setSelectedTask(e.target.value);
+              setIsRunning(false);
               console.log("Selected task id:", e.target.value);
             }}
             className="
@@ -235,8 +278,9 @@ const FocusTimer = () => {
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <h1 className="text-4xl lg:text-5xl font-bold dark:text-[#f5f5f5]">
-                {focusSession ? focusSession : "00"}:
-                {seconds < 10 ? `0${seconds}` : seconds}
+                {/* {focusSession < 10 ? `0${focusSession}` : focusSession}:
+                {seconds < 10 ? `0${seconds}` : seconds} */}
+                {formatTime(timeLeft)}
               </h1>
 
               <p className="text-gray-400 dark:text-[#b0b0b0] text-base mt-1">
@@ -254,13 +298,16 @@ const FocusTimer = () => {
           {/* not required now change later */}
 
           <button
-            onClick={() => {
-              handleStartTimer();
-              handleSeconds();
-            }}
+            onClick={() => setIsRunning(true)}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
             Start
+          </button>
+          <button
+            onClick={() => setIsRunning(false)}
+            className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
+          >
+            Stop
           </button>
 
           {/* <button className="border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition">
