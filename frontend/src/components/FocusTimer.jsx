@@ -30,7 +30,11 @@ const FocusTimer = () => {
         throw new Error(data.error || data.message || "Something went wrong");
       }
 
-      setGetAllTask(data.tasks);
+      const rewardsTask = data.tasks.filter((task) => task.rewards !== null);
+
+      console.log(rewardsTask);
+
+      setGetAllTask(rewardsTask);
       // console.log(getAllTask);
       console.log(Array.isArray(data));
       console.log(data.tasks);
@@ -117,10 +121,16 @@ const FocusTimer = () => {
   // calculating the circle
   const MAX_MINUTES = 60;
   const radius = 42;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = Math.floor(2 * Math.PI * radius);
   const safeMinutes = Math.min(currentTask?.focus_session || 0, MAX_MINUTES);
   const progress = safeMinutes / MAX_MINUTES;
-  const totalProgress = circumference * progress;
+  const [totalProgress, setTotalProgress] = useState();
+  const ref = useRef(null);
+
+  useEffect(() => {
+    setTotalProgress(Math.floor(circumference * progress));
+  }, [circumference, progress]);
+  // Math.floor(circumference * progress)
 
   console.log(circumference);
   console.log(totalProgress);
@@ -131,45 +141,23 @@ const FocusTimer = () => {
     setStrokeDashoffset(Math.floor(circumference - totalProgress));
   }, [totalProgress]);
 
-  // console.log(strokeDashoffset);
+  useEffect(() => {
+    if (isRunning) {
+      console.log("console log from", totalProgress);
+      console.log("console log from", focusSession);
+      const reducePerMinute = totalProgress / focusSession;
+      // now per minute reduce the number which you got
+      ref.current = setInterval(() => {
+        if (totalProgress >= 0) {
+          setTotalProgress((prev) => prev - reducePerMinute);
+        }
+      }, 60000);
+    } else {
+      clearInterval(ref.current);
+    }
 
-  // const handleStartTimer = () => {
-  //   const interval = setInterval(() => {
-  //     setStrokeDashoffset((prevOffset) => {
-  //       if (prevOffset === 263) {
-  //         clearInterval(interval);
-  //         return circumference;
-  //       }
-  //       return prevOffset + 1;
-  //     });
-  //   }, 1000);
-  // };
-
-  // const handleSeconds = () => {
-  //   if (timerId) return; // already running
-
-  //   const interval = setInterval(() => {
-  //     setSeconds((prevSeconds) => {
-  //       if (prevSeconds < 1) {
-  //         setFocusSession((prevFocus) => {
-  //           if (prevFocus <= 0) {
-  //             clearInterval(interval);
-  //             setTimerId(null);
-  //             return 0;
-  //           }
-
-  //           return prevFocus - 1;
-  //         });
-
-  //         return SECONDS_PER_SESSION;
-  //       }
-
-  //       return prevSeconds - 1;
-  //     });
-  //   }, 500);
-
-  //   setTimerId(interval);
-  // };
+    return () => clearInterval(ref.current);
+  }, [isRunning]);
 
   console.log(strokeDashoffset);
 

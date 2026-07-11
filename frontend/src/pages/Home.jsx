@@ -34,7 +34,7 @@ const Home = () => {
       console.log("Error in getAllTasks:", error);
     }
   };
-
+  // create custom hook for rewards
   return (
     <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0f0f0f]">
       <div className="max-w-[1440px] mx-auto px-4 py-4">
