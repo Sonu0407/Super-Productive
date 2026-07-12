@@ -10,6 +10,8 @@ const Home = () => {
     getAllTasks();
   }, []);
 
+  // add music folder and commit changes
+
   const getAllTasks = async () => {
     try {
       const url = "http://localhost:8000/api/tasks/";
