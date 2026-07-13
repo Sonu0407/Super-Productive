@@ -2,9 +2,13 @@ import Navbar from "../components/Navbar";
 import FocusTimer from "../components/FocusTimer";
 import TaskPanel from "../components/TaskPanel";
 import { useEffect, useState } from "react";
+import MusicCard from "../components/MusicCard";
 
 const Home = () => {
   const [getAllTask, setGetAllTask] = useState([]);
+  const [selectedSong, setSelectedSong] = useState(null);
+
+  console.log(selectedSong);
 
   useEffect(() => {
     getAllTasks();
@@ -38,7 +42,7 @@ const Home = () => {
   };
   // create custom hook for rewards
   return (
-    <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0f0f0f]">
+    <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0f0f0f] position: relative">
       <div className="max-w-[1440px] mx-auto px-4 py-4">
         {/* Navbar */}
         <Navbar />
@@ -46,7 +50,7 @@ const Home = () => {
         {/* Main Content */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mt-3">
           <div>
-            <FocusTimer />
+            <FocusTimer selectedSong={selectedSong} />
           </div>
 
           <div>
@@ -54,6 +58,10 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+      {/* Sounds Content */}
+
+      <MusicCard setSelectedSong={setSelectedSong} />
     </div>
   );
 };

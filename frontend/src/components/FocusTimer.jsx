@@ -2,13 +2,38 @@ import { useEffect, useRef, useState } from "react";
 import RewardCard from "./RewardCard";
 import { IoReloadCircle } from "react-icons/io5";
 
-const FocusTimer = () => {
+const FocusTimer = ({ selectedSong }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
   const [getAllTask, setGetAllTask] = useState([]);
   const [reloading, setReloading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-  // const [seconds, setSeconds] = useState(60);
+  const songsArray = [
+    "/sounds/Brown-noise.mp3",
+    "/sounds/Low-pink-noise.mp3",
+    "/sounds/Rain with thunder noise.wav",
+    "/sounds/Ambient Piano Sound.mp3",
+    "/sounds/Coffee shop ambience noise.mp3",
+    "/sounds/Ocean waves noise.mp3",
+  ];
+  const audioRef = useRef(new Audio());
+
+  useEffect(() => {
+    if (selectedSong === null || selectedSong === undefined) return;
+
+    audioRef.current.pause();
+    audioRef.current.src = songsArray[selectedSong];
+    audioRef.current.load();
+    audioRef.current.play();
+  }, [selectedSong]);
+
+  console.log(typeof songsArray[selectedSong]);
+
+  console.log(songsArray[selectedSong]);
+
+  useEffect(() => {
+    audioRef.current.loop = true;
+  }, []);
 
   useEffect(() => {
     getAllTasks();
@@ -106,6 +131,7 @@ const FocusTimer = () => {
           if (prev <= 1) {
             clearInterval(intervalRef.current);
             setIsRunning(false);
+            audioRef.current.pause();
             return 0;
           }
           return prev - 1;
@@ -286,13 +312,20 @@ const FocusTimer = () => {
           {/* not required now change later */}
 
           <button
-            onClick={() => setIsRunning(true)}
+            onClick={() => {
+              setIsRunning(true);
+              audioRef.current.play();
+              audioRef.current.volume = 0.2;
+            }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
             Start
           </button>
           <button
-            onClick={() => setIsRunning(false)}
+            onClick={() => {
+              setIsRunning(false);
+              audioRef.current.pause();
+            }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
             Stop
