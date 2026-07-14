@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
+import { FaVolumeUp } from "react-icons/fa";
 import { X } from "lucide-react";
+
+import VolumeScrollBar from "./MusicCard/VolumeScrollBar";
 
 const songs = [
   "Brown Noise",
@@ -106,6 +109,14 @@ const MusicCard = ({ setSelectedSong }) => {
                 🎵 {song}
               </button>
             ))}
+          </div>
+
+          {/* Volume */}
+          <div className="h-[90px] flex justify-start items-center">
+            <div className="w-full flex justify-between px-2 py-2 gap-2">
+              <FaVolumeUp color="white" size={35} />
+              <VolumeScrollBar />
+            </div>
           </div>
         </div>
       )}

@@ -7,6 +7,7 @@ import MusicCard from "../components/MusicCard";
 const Home = () => {
   const [getAllTask, setGetAllTask] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
+  const [isRunning, setIsRunning] = useState(false);
 
   console.log(selectedSong);
 
@@ -50,7 +51,12 @@ const Home = () => {
         {/* Main Content */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mt-3">
           <div>
-            <FocusTimer selectedSong={selectedSong} />
+            <FocusTimer
+              selectedSong={selectedSong}
+              setSelectedSong={setSelectedSong}
+              isRunning={isRunning}
+              setIsRunning={setIsRunning}
+            />
           </div>
 
           <div>

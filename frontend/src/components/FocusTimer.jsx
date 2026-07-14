@@ -2,12 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import RewardCard from "./RewardCard";
 import { IoReloadCircle } from "react-icons/io5";
 
-const FocusTimer = ({ selectedSong }) => {
+const FocusTimer = ({
+  selectedSong,
+  setSelectedSong,
+  setIsRunning,
+  isRunning,
+}) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
   const [getAllTask, setGetAllTask] = useState([]);
   const [reloading, setReloading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
+  const defaultAudio = useRef(new Audio("/sounds/Brown-noise.mp3"));
   const songsArray = [
     "/sounds/Brown-noise.mp3",
     "/sounds/Low-pink-noise.mp3",
@@ -16,15 +22,18 @@ const FocusTimer = ({ selectedSong }) => {
     "/sounds/Coffee shop ambience noise.mp3",
     "/sounds/Ocean waves noise.mp3",
   ];
-  const audioRef = useRef(new Audio());
+  let audioRef = useRef(new Audio());
 
   useEffect(() => {
-    if (selectedSong === null || selectedSong === undefined) return;
-
+    if (selectedSong === null || selectedSong === undefined) {
+      return;
+    }
+    defaultAudio.current.pause();
     audioRef.current.pause();
     audioRef.current.src = songsArray[selectedSong];
     audioRef.current.load();
     audioRef.current.play();
+    audioRef.current.volume = 0.3;
   }, [selectedSong]);
 
   console.log(typeof songsArray[selectedSong]);
@@ -107,7 +116,7 @@ const FocusTimer = ({ selectedSong }) => {
   };
 
   const [timeLeft, setTimeLeft] = useState(focusSession * 60); // pass the time in the seconds to reformat it later
-  const [isRunning, setIsRunning] = useState(false);
+
   const intervalRef = useRef(null);
 
   useEffect(() => {
@@ -314,8 +323,13 @@ const FocusTimer = ({ selectedSong }) => {
           <button
             onClick={() => {
               setIsRunning(true);
-              audioRef.current.play();
-              audioRef.current.volume = 0.2;
+              if (selectedSong) {
+                audioRef.current.play();
+                audioRef.current.volume = 0.3;
+              } else {
+                defaultAudio.current.play();
+                defaultAudio.current.volume = 0.3;
+              }
             }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
@@ -324,7 +338,11 @@ const FocusTimer = ({ selectedSong }) => {
           <button
             onClick={() => {
               setIsRunning(false);
-              audioRef.current.pause();
+              if (selectedSong) {
+                defaultAudio.current.pause();
+                audioRef.current.pause();
+              }
+              defaultAudio.current.pause();
             }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
           >
