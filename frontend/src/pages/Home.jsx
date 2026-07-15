@@ -8,6 +8,9 @@ const Home = () => {
   const [getAllTask, setGetAllTask] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [volume, setVolume] = useState(30);
+
+  console.log(volume);
 
   console.log(selectedSong);
 
@@ -56,6 +59,8 @@ const Home = () => {
               setSelectedSong={setSelectedSong}
               isRunning={isRunning}
               setIsRunning={setIsRunning}
+              volume={volume}
+              setVolume={setVolume}
             />
           </div>
 
@@ -67,7 +72,11 @@ const Home = () => {
 
       {/* Sounds Content */}
 
-      <MusicCard setSelectedSong={setSelectedSong} />
+      <MusicCard
+        setSelectedSong={setSelectedSong}
+        volume={volume}
+        setVolume={setVolume}
+      />
     </div>
   );
 };

@@ -7,6 +7,8 @@ const FocusTimer = ({
   setSelectedSong,
   setIsRunning,
   isRunning,
+  volume,
+  setVolume,
 }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
@@ -14,6 +16,7 @@ const FocusTimer = ({
   const [reloading, setReloading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const defaultAudio = useRef(new Audio("/sounds/Brown-noise.mp3"));
+  const [isItPlaying, setIsItPlaying] = useState(false);
   const songsArray = [
     "/sounds/Brown-noise.mp3",
     "/sounds/Low-pink-noise.mp3",
@@ -33,16 +36,21 @@ const FocusTimer = ({
     audioRef.current.src = songsArray[selectedSong];
     audioRef.current.load();
     audioRef.current.play();
-    audioRef.current.volume = 0.3;
+    audioRef.current.loop = true;
   }, [selectedSong]);
+
+  useEffect(() => {
+    audioRef.current.volume = volume / 100;
+    defaultAudio.current.volume = volume / 100;
+  }, [volume]);
 
   console.log(typeof songsArray[selectedSong]);
 
   console.log(songsArray[selectedSong]);
 
-  useEffect(() => {
-    audioRef.current.loop = true;
-  }, []);
+  // useEffect(() => {
+  //   audioRef.current.loop = true;
+  // }, []);
 
   useEffect(() => {
     getAllTasks();
@@ -250,7 +258,9 @@ const FocusTimer = ({
             outline-none
           "
           >
-            <option>Select a task to focus on...</option>
+            <option disabled selected>
+              Select task to focus on
+            </option>
             {getAllTask.map((task) => (
               <option
                 // onClick={getCurrentTaskDetails}
@@ -321,14 +331,18 @@ const FocusTimer = ({
           {/* not required now change later */}
 
           <button
+            disabled={!timeLeft}
             onClick={() => {
               setIsRunning(true);
+              setIsItPlaying(true);
               if (selectedSong) {
+                defaultAudio.current.pause();
                 audioRef.current.play();
-                audioRef.current.volume = 0.3;
+                // audioRef.current.volume = volume / 100;
               } else {
+                audioRef.current.pause();
                 defaultAudio.current.play();
-                defaultAudio.current.volume = 0.3;
+                // defaultAudio.current.volume = volume / 100;
               }
             }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
@@ -336,8 +350,10 @@ const FocusTimer = ({
             Start
           </button>
           <button
+            disabled={!timeLeft}
             onClick={() => {
               setIsRunning(false);
+              setIsItPlaying(false);
               if (selectedSong) {
                 defaultAudio.current.pause();
                 audioRef.current.pause();

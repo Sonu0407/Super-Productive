@@ -14,7 +14,7 @@ const songs = [
   "Ocean Waves",
 ];
 
-const MusicCard = ({ setSelectedSong }) => {
+const MusicCard = ({ setSelectedSong, volume, setVolume }) => {
   const [isOpen, setIsOpen] = useState(false);
   const cardRef = useRef(null);
 
@@ -115,7 +115,7 @@ const MusicCard = ({ setSelectedSong }) => {
           <div className="h-[90px] flex justify-start items-center">
             <div className="w-full flex justify-between px-2 py-2 gap-2">
               <FaVolumeUp color="white" size={35} />
-              <VolumeScrollBar />
+              <VolumeScrollBar volume={volume} setVolume={setVolume} />
             </div>
           </div>
         </div>
