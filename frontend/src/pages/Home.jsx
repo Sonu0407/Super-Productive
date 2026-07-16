@@ -86,6 +86,7 @@ const Home = () => {
               setIsRunning={setIsRunning}
               volume={volume}
               setVolume={setVolume}
+              reloadwalletBalance={getWalletBalance}
             />
           </div>
 

@@ -10,6 +10,7 @@ const FocusTimer = ({
   isRunning,
   volume,
   setVolume,
+  reloadwalletBalance,
 }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
@@ -154,7 +155,7 @@ const FocusTimer = ({
           }
           return prev - 1;
         });
-      }, 1000);
+      }, 100);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -202,6 +203,37 @@ const FocusTimer = ({
 
     return () => clearInterval(ref.current);
   }, [isRunning]);
+
+  // TODO when i play the default sound and after time end it is not stopping the sound fix that
+
+  console.log(currentTask.rewards);
+
+  // useEffect(() => {
+  //   if (timeLeft === 0 && selectedTask) {
+  //     // if timeleft is zero then update wallet balance with the current reward
+  //     const updateWalletBalance = async () => {
+  //       try {
+  //         const url = "http://localhost:8000/api/auth/update/wallet";
+  //         const response = await fetch(url, {
+  //           method: "POST",
+  //           credentials: "include",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({
+  //             wallet_balance: currentTask.rewards,
+  //           }),
+  //         });
+
+  //         const data = await response.json();
+  //       } catch (error) {
+  //         console.log("Error in updateWalletBalance", error);
+  //       }
+  //     };
+  //     updateWalletBalance();
+  //   }
+  //   reloadwalletBalance();
+  // }, [timeLeft]);
 
   console.log(strokeDashoffset);
 
