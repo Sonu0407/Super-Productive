@@ -145,3 +145,61 @@ export const logoutUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getWalletBalance = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    try {
+      const query = "SELECT wallet_balance FROM users WHERE id = $1";
+      const values = [userId];
+      const result = await db.query(query, values);
+      res.status(200).json({ wallet_balance: result.rows[0].wallet_balance });
+    } catch (error) {
+      console.error("Database error in getWalletBalance:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  } catch (error) {
+    console.error("Error in getWalletBalance:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateUserWallet = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // Guard: body missing entirely or wallet_balance not provided
+    if (
+      !req.body ||
+      req.body.wallet_balance === undefined ||
+      req.body.wallet_balance === null
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please enter the wallet_balance amount" });
+    }
+
+    const wallet_balance = req.body.wallet_balance;
+
+    // Guard: must be a valid number
+    if (isNaN(wallet_balance) || Number(wallet_balance) < 0) {
+      return res
+        .status(400)
+        .json({ message: "wallet_balance must be a valid positive number" });
+    }
+
+    const query = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
+    const values = [Number(wallet_balance), userId];
+    const result = await db.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ message: "Wallet updated successfully." });
+  } catch (error) {
+    console.log("Error in updateUserWallet", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

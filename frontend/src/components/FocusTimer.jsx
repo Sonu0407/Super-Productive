@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import RewardCard from "./RewardCard";
 import { IoReloadCircle } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const FocusTimer = ({
   selectedSong,
@@ -35,7 +36,11 @@ const FocusTimer = ({
     audioRef.current.pause();
     audioRef.current.src = songsArray[selectedSong];
     audioRef.current.load();
-    audioRef.current.play();
+    if (isItPlaying) {
+      audioRef.current.play();
+    } else {
+      toast.error("Please select the task and start focusing!");
+    }
     audioRef.current.loop = true;
   }, [selectedSong]);
 
@@ -47,10 +52,6 @@ const FocusTimer = ({
   console.log(typeof songsArray[selectedSong]);
 
   console.log(songsArray[selectedSong]);
-
-  // useEffect(() => {
-  //   audioRef.current.loop = true;
-  // }, []);
 
   useEffect(() => {
     getAllTasks();

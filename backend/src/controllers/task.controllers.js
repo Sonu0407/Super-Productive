@@ -42,25 +42,6 @@ export const getTaskById = async (req, res) => {
   }
 };
 
-export const getWalletBalance = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    try {
-      const query = "SELECT wallet_balance FROM users WHERE id = $1";
-      const values = [userId];
-      const result = await db.query(query, values);
-      res.status(200).json({ wallet_balance: result.rows[0].wallet_balance });
-    } catch (error) {
-      console.error("Database error in getWalletBalance:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  } catch (error) {
-    console.error("Error in getWalletBalance:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 export const createTask = async (req, res) => {
   try {
     const userId = req.userId;

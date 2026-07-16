@@ -6,14 +6,12 @@ import {
   updateTask,
   deleteTask,
   getTaskById,
-  getWalletBalance,
 } from "../controllers/task.controllers.js";
 import protectedRoute from "../middlewares/protectedRoute.js";
 
 const taskRouter = Router();
 
 taskRouter.get("/", protectedRoute, getAllTasks);
-taskRouter.get("/wallet", protectedRoute, getWalletBalance);
 taskRouter.get("/:id", protectedRoute, getTaskById);
 taskRouter.post("/", protectedRoute, createTask);
 taskRouter.put("/:id", protectedRoute, updateTask);

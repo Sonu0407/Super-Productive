@@ -9,29 +9,29 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { checkAuth } = useContext(AuthContext);
 
-  useEffect(() => {
-    getWalletBalance();
-  }, []);
+  // useEffect(() => {
+  //   getWalletBalance();
+  // }, []);
 
-  const getWalletBalance = async () => {
-    try {
-      const url = "http://localhost:8000/api/tasks/wallet";
-      const response = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
+  // const getWalletBalance = async () => {
+  //   try {
+  //     const url = "http://localhost:8000/api/tasks/wallet";
+  //     const response = await fetch(url, {
+  //       method: "GET",
+  //       credentials: "include",
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || data.message || "Something went wrong");
-      }
+  //     if (!response.ok) {
+  //       throw new Error(data.error || data.message || "Something went wrong");
+  //     }
 
-      setWalletBalance(data.wallet_balance);
-    } catch (error) {
-      console.error("Error in getWalletBalance:", error);
-    }
-  };
+  //     setWalletBalance(data.wallet_balance);
+  //   } catch (error) {
+  //     console.error("Error in getWalletBalance:", error);
+  //   }
+  // };
 
   const handleLogout = async () => {
     try {
