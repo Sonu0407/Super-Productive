@@ -70,6 +70,8 @@ const Home = () => {
   //   }
   // };
   // create custom hook for rewards
+  console.log("Wallet Balance:", walletBalance);
+
   return (
     <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0f0f0f] position: relative">
       <div className="max-w-[1440px] mx-auto px-4 py-4">

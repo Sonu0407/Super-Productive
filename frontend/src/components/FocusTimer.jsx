@@ -28,6 +28,7 @@ const FocusTimer = ({
     "/sounds/Ocean waves noise.mp3",
   ];
   let audioRef = useRef(new Audio());
+  const cashRegisterSound = new Audio("/sounds/cash registered sound.mp3");
 
   useEffect(() => {
     if (selectedSong === null || selectedSong === undefined) {
@@ -125,7 +126,9 @@ const FocusTimer = ({
     }
   };
 
-  const [timeLeft, setTimeLeft] = useState(focusSession * 60); // pass the time in the seconds to reformat it later
+  const [timeLeft, setTimeLeft] = useState(
+    focusSession != null ? focusSession * 60 : null,
+  ); // pass the time in the seconds to reformat it later
 
   const intervalRef = useRef(null);
 
@@ -151,6 +154,7 @@ const FocusTimer = ({
             clearInterval(intervalRef.current);
             setIsRunning(false);
             audioRef.current.pause();
+            defaultAudio.current.pause();
             return 0;
           }
           return prev - 1;
@@ -204,36 +208,92 @@ const FocusTimer = ({
     return () => clearInterval(ref.current);
   }, [isRunning]);
 
-  // TODO when i play the default sound and after time end it is not stopping the sound fix that
-
   console.log(currentTask.rewards);
 
-  // useEffect(() => {
-  //   if (timeLeft === 0 && selectedTask) {
-  //     // if timeleft is zero then update wallet balance with the current reward
-  //     const updateWalletBalance = async () => {
-  //       try {
-  //         const url = "http://localhost:8000/api/auth/update/wallet";
-  //         const response = await fetch(url, {
-  //           method: "POST",
-  //           credentials: "include",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           body: JSON.stringify({
-  //             wallet_balance: currentTask.rewards,
-  //           }),
-  //         });
+  console.log("Time Left:", timeLeft);
 
-  //         const data = await response.json();
-  //       } catch (error) {
-  //         console.log("Error in updateWalletBalance", error);
+  useEffect(() => {
+    console.log("Come here!");
+
+    if (timeLeft === 0 && selectedTask !== null) {
+      // update the wallet balance with CURRENT TASK REWARD
+      console.log("Come here!");
+      var updateWalletBalance = async () => {
+        try {
+          const url = "http://localhost:8000/api/auth/update/wallet";
+          const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              wallet_balance: currentTask.rewards,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              data.error || data.message || "Something went wrong",
+            );
+          } else {
+            await reloadwalletBalance();
+            cashRegisterSound.play();
+          }
+
+          console.log(data.message);
+        } catch (error) {
+          console.log("Error in updateWalletBalance", error);
+        }
+      };
+      updateWalletBalance();
+      // reloadwalletBalance();
+    }
+    console.log("Came here");
+  }, [timeLeft]);
+
+  // useEffect(() => {}, []) // TODO: I made var as updateWallet use that to delete the current task
+
+  // After updating the wallet delete that current task
+  // useEffect(() => {
+  //   // Delete Api
+  //   const deleteTask = async (currentTask) => {
+  //     try {
+  //       // await updateToCompleted(task);
+
+  //       // await new Promise((resolve) => setTimeout(resolve, 700));
+
+  //       const url = `http://localhost:8000/api/tasks/${currentTask.id}`;
+
+  //       const response = await fetch(url, {
+  //         method: "DELETE",
+  //         credentials: "include",
+  //       });
+
+  //       const data = await response.json();
+
+  //       if (!response.ok) {
+  //         throw new Error(data.error || data.message);
   //       }
-  //     };
-  //     updateWalletBalance();
-  //   }
-  //   reloadwalletBalance();
-  // }, [timeLeft]);
+
+  //       // Remove immediately from UI
+  //       setGetAllTask((prev) => prev.filter((tasks) => tasks.id !== task.id));
+
+  //       // console.log(task.rewards);
+
+  //       toast.success("Task deleted successfully");
+  //       // setCompletedTasks((prev) => prev + 1);
+  //       // setTotalReward((prev) => prev + Number(task.rewards || 0));
+  //       // deleteTaskSound.play();
+  //     } catch (error) {
+  //       console.log("Error in deleteTask", error);
+  //       toast.error(error.message);
+  //     }
+  //   };
+  //   deleteTask();
+  // }, [reloadwalletBalance]);
 
   console.log(strokeDashoffset);
 

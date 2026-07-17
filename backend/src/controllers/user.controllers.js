@@ -169,7 +169,6 @@ export const updateUserWallet = async (req, res) => {
   try {
     const userId = req.userId;
 
-    // Guard: body missing entirely or wallet_balance not provided
     if (
       !req.body ||
       req.body.wallet_balance === undefined ||
@@ -182,7 +181,6 @@ export const updateUserWallet = async (req, res) => {
 
     const wallet_balance = req.body.wallet_balance;
 
-    // Guard: must be a valid number
     if (isNaN(wallet_balance) || Number(wallet_balance) < 0) {
       return res
         .status(400)

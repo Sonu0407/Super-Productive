@@ -1,41 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../context/AuthContext";
-import { useEffect } from "react";
 
-const Navbar = () => {
-  const [walletBalance, setWalletBalance] = useState(null);
+const Navbar = ({ walletBalance }) => {
   const navigate = useNavigate();
   const { checkAuth } = useContext(AuthContext);
 
-  // useEffect(() => {
-  //   getWalletBalance();
-  // }, []);
+  const [animateReward, setAnimateReward] = useState(false);
+  const [rewardIncrease, setRewardIncrease] = useState(null);
+  const prevBalance = useRef(walletBalance || 0);
 
-  // const getWalletBalance = async () => {
-  //   try {
-  //     const url = "http://localhost:8000/api/tasks/wallet";
-  //     const response = await fetch(url, {
-  //       method: "GET",
-  //       credentials: "include",
-  //     });
+  useEffect(() => {
+    const current = Number(walletBalance || 0);
+    const previous = Number(prevBalance.current);
 
-  //     const data = await response.json();
+    if (current > previous) {
+      setRewardIncrease(current - previous);
+      setAnimateReward(true);
 
-  //     if (!response.ok) {
-  //       throw new Error(data.error || data.message || "Something went wrong");
-  //     }
+      setTimeout(() => {
+        setAnimateReward(false);
+        setRewardIncrease(null);
+      }, 2500);
+    }
 
-  //     setWalletBalance(data.wallet_balance);
-  //   } catch (error) {
-  //     console.error("Error in getWalletBalance:", error);
-  //   }
-  // };
+    prevBalance.current = current;
+  }, [walletBalance]);
 
   const handleLogout = async () => {
     try {
       const url = "http://localhost:8000/api/auth/logout";
+
       const response = await fetch(url, {
         method: "POST",
         credentials: "include",
@@ -50,7 +46,6 @@ const Navbar = () => {
         throw new Error(data.error || data.message || "Something went wrong");
       }
 
-      console.log(data);
       toast.success("Logout successful");
       checkAuth();
       navigate("/login");
@@ -79,13 +74,52 @@ const Navbar = () => {
       </h1>
 
       <div className="flex items-center gap-6">
-        <div className="bg-amber-50 dark:bg-[#f8eedb] text-amber-700 dark:text-[#c96b1c] px-5 py-3 rounded-full font-semibold">
-          ${walletBalance ? walletBalance : "0"} earned
+        <div className="relative">
+          {rewardIncrease && (
+            <div
+              className="
+                absolute
+                -top-8
+                left-1/2
+                -translate-x-1/2
+                text-green-500
+                font-bold
+                animate-bounce
+                whitespace-nowrap
+                pointer-events-none
+              "
+            >
+              +${rewardIncrease}
+            </div>
+          )}
+
+          <div
+            className={`
+              bg-amber-50
+              dark:bg-[#f8eedb]
+              text-amber-700
+              dark:text-[#c96b1c]
+              px-5
+              py-3
+              rounded-full
+              font-semibold
+              transition-all
+              duration-500
+              cursor-default
+              ${
+                animateReward
+                  ? "scale-110 shadow-[0_0_35px_rgba(251,191,36,0.9)]"
+                  : ""
+              }
+            `}
+          >
+            💰 ${walletBalance || 0} earned
+          </div>
         </div>
 
         <button
           onClick={handleLogout}
-          className="text-gray-500 dark:text-[#c8c8c8]  cursor-pointer"
+          className="text-gray-500 dark:text-[#c8c8c8] cursor-pointer"
         >
           Logout
         </button>
