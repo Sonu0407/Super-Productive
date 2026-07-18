@@ -23,27 +23,31 @@ const TasksPanel = ({
   // const deleteTaskSound = new Audio("/sounds/delete-task.wav");
 
   const updateToCompleted = async (task) => {
-    const url = `http://localhost:8000/api/tasks/${task.id}`;
+    try {
+      const url = `http://localhost:8000/api/tasks/${task.id}`;
 
-    const response = await fetch(url, {
-      method: "PUT",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: task.title,
-        completed: true,
-      }),
-    });
+      const response = await fetch(url, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: task.title,
+          completed: true,
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error || data.message);
+      if (!response.ok) {
+        throw new Error(data.error || data.message);
+      }
+
+      return data;
+    } catch (error) {
+      console.log("Error in updateToCompleted", error);
     }
-
-    return data;
   };
 
   const handleDeleteTask = async (task) => {

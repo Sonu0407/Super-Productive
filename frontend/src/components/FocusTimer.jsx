@@ -269,7 +269,7 @@ const FocusTimer = ({
       const deleteTask = async (currentTask) => {
         try {
           // await updateToCompleted(task);
-
+          // TODO: AFTER Focus timer is over and task gets delete then nothing task is getting and timer also is not updating check why? TMR
           // await new Promise((resolve) => setTimeout(resolve, 700));
           console.log(currentTask);
           const url = `http://localhost:8000/api/tasks/${currentTask.id}`;
@@ -290,11 +290,12 @@ const FocusTimer = ({
             prev.filter((tasks) => tasks.id !== currentTask.id),
           );
 
+          console.log(getAllTask);
           // console.log(task.rewards);
 
           toast.success("Task deleted successfully");
           setCompletedTasks((prev) => prev + 1);
-          setTotalReward((prev) => prev + Number(task.rewards || 0));
+          setTotalReward((prev) => prev + Number(currentTask.rewards || 0));
           deleteTaskSound.play();
         } catch (error) {
           console.log("Error in deleteTask", error);
@@ -381,6 +382,7 @@ const FocusTimer = ({
         {/* Task Select */}
         <div className="flex items-center justify-between gap-1">
           <select
+            value={selectedTask || ""}
             // onClick={getCurrentTaskDetails}
             onChange={(e) => {
               setSelectedTask(e.target.value);
@@ -404,7 +406,8 @@ const FocusTimer = ({
             outline-none
           "
           >
-            <option disabled selected>
+            {/* disabled selected */}
+            <option value="" disabled>
               Select task to focus on
             </option>
             {getAllTask.map((task) => (
