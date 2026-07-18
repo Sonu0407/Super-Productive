@@ -11,6 +11,10 @@ const Home = () => {
   const [volume, setVolume] = useState(30);
   const [walletBalance, setWalletBalance] = useState(null);
 
+  // Task panel's
+  const [completedTasks, setCompletedTasks] = useState(0); // 2
+  const [totalReward, setTotalReward] = useState(0); // 3
+
   console.log(volume);
 
   console.log(selectedSong);
@@ -89,11 +93,18 @@ const Home = () => {
               volume={volume}
               setVolume={setVolume}
               reloadwalletBalance={getWalletBalance}
+              setCompletedTasks={setCompletedTasks}
+              setTotalReward={setTotalReward}
             />
           </div>
 
           <div>
-            <TaskPanel />
+            <TaskPanel
+              completedTasks={completedTasks}
+              setCompletedTasks={setCompletedTasks}
+              totalReward={totalReward}
+              setTotalReward={setTotalReward}
+            />
           </div>
         </div>
       </div>

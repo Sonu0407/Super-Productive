@@ -11,6 +11,8 @@ const FocusTimer = ({
   volume,
   setVolume,
   reloadwalletBalance,
+  setCompletedTasks,
+  setTotalReward,
 }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
@@ -29,6 +31,8 @@ const FocusTimer = ({
   ];
   let audioRef = useRef(new Audio());
   const cashRegisterSound = new Audio("/sounds/cash registered sound.mp3");
+  const deleteTaskSound = new Audio("/sounds/delete-task.wav");
+  const [walletUpdated, setWalletUpdated] = useState(false);
 
   useEffect(() => {
     if (selectedSong === null || selectedSong === undefined) {
@@ -220,6 +224,7 @@ const FocusTimer = ({
       console.log("Come here!");
       var updateWalletBalance = async () => {
         try {
+          setWalletUpdated(false);
           const url = "http://localhost:8000/api/auth/update/wallet";
           const response = await fetch(url, {
             method: "POST",
@@ -246,6 +251,8 @@ const FocusTimer = ({
           console.log(data.message);
         } catch (error) {
           console.log("Error in updateWalletBalance", error);
+        } finally {
+          setWalletUpdated(true);
         }
       };
       updateWalletBalance();
@@ -254,7 +261,53 @@ const FocusTimer = ({
     console.log("Came here");
   }, [timeLeft]);
 
-  // useEffect(() => {}, []) // TODO: I made var as updateWallet use that to delete the current task
+  // console.log(currentTask.id); // it is giving the correct output
+
+  useEffect(() => {
+    if (walletUpdated) {
+      // Deleting the current task after updating the wallet
+      const deleteTask = async (currentTask) => {
+        try {
+          // await updateToCompleted(task);
+
+          // await new Promise((resolve) => setTimeout(resolve, 700));
+          console.log(currentTask);
+          const url = `http://localhost:8000/api/tasks/${currentTask.id}`;
+
+          const response = await fetch(url, {
+            method: "DELETE",
+            credentials: "include",
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || data.message);
+          }
+
+          // Remove immediately from UI
+          setGetAllTask((prev) =>
+            prev.filter((tasks) => tasks.id !== currentTask.id),
+          );
+
+          // console.log(task.rewards);
+
+          toast.success("Task deleted successfully");
+          setCompletedTasks((prev) => prev + 1);
+          setTotalReward((prev) => prev + Number(task.rewards || 0));
+          deleteTaskSound.play();
+        } catch (error) {
+          console.log("Error in deleteTask", error);
+          toast.error(error.message);
+        }
+      };
+      deleteTask(currentTask);
+    }
+  }, [walletUpdated]);
+
+  // useEffect(() => {
+  //   if (updateWalletBalance) console.log("Wallet Balance activated");
+  // }, []); // TODO: I made var as updateWallet use that to delete the current task
 
   // After updating the wallet delete that current task
   // useEffect(() => {

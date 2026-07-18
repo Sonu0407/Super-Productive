@@ -7,14 +7,19 @@ import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import TaskModal from "./TaskModel";
 
-const TasksPanel = () => {
+const TasksPanel = ({
+  completedTasks,
+  setCompletedTasks,
+  totalReward,
+  setTotalReward,
+}) => {
   const [task, setTask] = useState("");
   const [reward, setReward] = useState(""); // no use no where used
   const [getAllTask, setGetAllTask] = useState([]); // 1
   const [selectedTask, setSelectedTask] = useState(null);
   const addTaskSound = new Audio("/sounds/add-task.wav");
-  const [completedTasks, setCompletedTasks] = useState(0); // 2
-  const [totalReward, setTotalReward] = useState(0); // 3
+  // const [completedTasks, setCompletedTasks] = useState(0); // 2
+  // const [totalReward, setTotalReward] = useState(0); // 3
   // const deleteTaskSound = new Audio("/sounds/delete-task.wav");
 
   const updateToCompleted = async (task) => {
