@@ -96,6 +96,7 @@ const FocusTimer = ({
     try {
       setReloading(true);
       await getAllTasks();
+      await getCurrentTaskDetails();
     } finally {
       setReloading(false);
     }
@@ -105,7 +106,7 @@ const FocusTimer = ({
     if (selectedTask) {
       getCurrentTaskDetails();
     }
-  }, [selectedTask]);
+  }, [selectedTask, setSelectedTask]);
   const getCurrentTaskDetails = async () => {
     console.log(selectedTask);
     try {
@@ -271,8 +272,9 @@ const FocusTimer = ({
           // await updateToCompleted(task);
           // TODO: AFTER Focus timer is over and task gets delete then nothing task is getting and timer also is not updating check why? TMR
           // await new Promise((resolve) => setTimeout(resolve, 700));
-          console.log(currentTask);
-          const url = `http://localhost:8000/api/tasks/${currentTask.id}`;
+          const taskToDelete = currentTask;
+          // console.log(currentTask);
+          const url = `http://localhost:8000/api/tasks/${taskToDelete.id}`;
 
           const response = await fetch(url, {
             method: "DELETE",
@@ -285,17 +287,27 @@ const FocusTimer = ({
             throw new Error(data.error || data.message);
           }
 
-          // Remove immediately from UI
-          setGetAllTask((prev) =>
-            prev.filter((tasks) => tasks.id !== currentTask.id),
+          console.log(getAllTask);
+
+          const freshTasks = getAllTask.filter(
+            (task) => task.id !== taskToDelete.id,
           );
 
-          console.log(getAllTask);
+          // console.log(freshTasks);
+
+          // Remove immediately from UI
+          setGetAllTask(freshTasks);
+
+          // console.log(getAllTask);
           // console.log(task.rewards);
 
           toast.success("Task deleted successfully");
           setCompletedTasks((prev) => prev + 1);
-          setTotalReward((prev) => prev + Number(currentTask.rewards || 0));
+          setTotalReward((prev) => prev + Number(taskToDelete.rewards || 0));
+          setSelectedTask("");
+          setCurrentTask("");
+          setFocusSession(0);
+          setTimeLeft(0);
           deleteTaskSound.play();
         } catch (error) {
           console.log("Error in deleteTask", error);
@@ -306,50 +318,8 @@ const FocusTimer = ({
     }
   }, [walletUpdated]);
 
-  // useEffect(() => {
-  //   if (updateWalletBalance) console.log("Wallet Balance activated");
-  // }, []); // TODO: I made var as updateWallet use that to delete the current task
-
-  // After updating the wallet delete that current task
-  // useEffect(() => {
-  //   // Delete Api
-  //   const deleteTask = async (currentTask) => {
-  //     try {
-  //       // await updateToCompleted(task);
-
-  //       // await new Promise((resolve) => setTimeout(resolve, 700));
-
-  //       const url = `http://localhost:8000/api/tasks/${currentTask.id}`;
-
-  //       const response = await fetch(url, {
-  //         method: "DELETE",
-  //         credentials: "include",
-  //       });
-
-  //       const data = await response.json();
-
-  //       if (!response.ok) {
-  //         throw new Error(data.error || data.message);
-  //       }
-
-  //       // Remove immediately from UI
-  //       setGetAllTask((prev) => prev.filter((tasks) => tasks.id !== task.id));
-
-  //       // console.log(task.rewards);
-
-  //       toast.success("Task deleted successfully");
-  //       // setCompletedTasks((prev) => prev + 1);
-  //       // setTotalReward((prev) => prev + Number(task.rewards || 0));
-  //       // deleteTaskSound.play();
-  //     } catch (error) {
-  //       console.log("Error in deleteTask", error);
-  //       toast.error(error.message);
-  //     }
-  //   };
-  //   deleteTask();
-  // }, [reloadwalletBalance]);
-
   console.log(strokeDashoffset);
+  console.log(getAllTask);
 
   return (
     <div className="bg-white dark:bg-[#2f2f2f] rounded-3xl border border-gray-200 dark:border-[#505050] overflow-hidden">

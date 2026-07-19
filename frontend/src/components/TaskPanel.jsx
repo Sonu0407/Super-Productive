@@ -70,14 +70,17 @@ const TasksPanel = ({
       }
 
       // Remove immediately from UI
+      console.log(getAllTask);
+
       setGetAllTask((prev) => prev.filter((tasks) => tasks.id !== task.id));
+      console.log(getAllTask);
 
       console.log(task.rewards);
 
       toast.success("Task deleted successfully");
       setCompletedTasks((prev) => prev + 1);
       setTotalReward((prev) => prev + Number(task.rewards || 0));
-      // deleteTaskSound.play();
+      deleteTaskSound.play();
     } catch (error) {
       toast.error(error.message);
     }
