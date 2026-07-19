@@ -13,6 +13,7 @@ const FocusTimer = ({
   reloadwalletBalance,
   setCompletedTasks,
   setTotalReward,
+  setTaskDeleted,
 }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
@@ -94,9 +95,13 @@ const FocusTimer = ({
 
   const handleReload = async () => {
     try {
+      // TODO: WHEN I CLICK ON RELOAD IT SHOULD RESET ALL VALUES EXSPECIALLY THE TIMER AND RING ONE
       setReloading(true);
       await getAllTasks();
-      await getCurrentTaskDetails();
+      setSelectedTask("");
+      setCurrentTask("");
+      setFocusSession(null);
+      setTimeLeft(null);
     } finally {
       setReloading(false);
     }
@@ -308,6 +313,7 @@ const FocusTimer = ({
           setCurrentTask("");
           setFocusSession(0);
           setTimeLeft(0);
+          setTaskDeleted(true);
           deleteTaskSound.play();
         } catch (error) {
           console.log("Error in deleteTask", error);

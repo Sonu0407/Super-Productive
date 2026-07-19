@@ -12,6 +12,8 @@ const TasksPanel = ({
   setCompletedTasks,
   totalReward,
   setTotalReward,
+  taskDeleted,
+  setTaskDeleted,
 }) => {
   const [task, setTask] = useState("");
   const [reward, setReward] = useState(""); // no use no where used
@@ -21,6 +23,11 @@ const TasksPanel = ({
   // const [completedTasks, setCompletedTasks] = useState(0); // 2
   // const [totalReward, setTotalReward] = useState(0); // 3
   // const deleteTaskSound = new Audio("/sounds/delete-task.wav");
+
+  useEffect(() => {
+    getAllTasks();
+    setTaskDeleted(false);
+  }, [taskDeleted]);
 
   const updateToCompleted = async (task) => {
     try {
@@ -80,7 +87,7 @@ const TasksPanel = ({
       toast.success("Task deleted successfully");
       setCompletedTasks((prev) => prev + 1);
       setTotalReward((prev) => prev + Number(task.rewards || 0));
-      deleteTaskSound.play();
+      // deleteTaskSound.play();
     } catch (error) {
       toast.error(error.message);
     }

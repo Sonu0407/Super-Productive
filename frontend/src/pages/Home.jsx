@@ -10,6 +10,7 @@ const Home = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [volume, setVolume] = useState(30);
   const [walletBalance, setWalletBalance] = useState(null);
+  const [taskDeleted, setTaskDeleted] = useState(false);
 
   // Task panel's
   const [completedTasks, setCompletedTasks] = useState(0); // 2
@@ -43,36 +44,36 @@ const Home = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getAllTasks();
-  // }, []);
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
   // add music folder and commit changes
 
-  // const getAllTasks = async () => {
-  //   try {
-  //     const url = "http://localhost:8000/api/tasks/";
-  //     const response = await fetch(url, {
-  //       method: "GET",
-  //       credentials: "include",
-  //     });
+  const getAllTasks = async () => {
+    try {
+      const url = "http://localhost:8000/api/tasks/";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
 
-  //     const data = await response.json();
+      const data = await response.json();
 
-  //     // console.log("response", response);
+      // console.log("response", response);
 
-  //     if (!response.ok) {
-  //       throw new Error(data.error || data.message || "Something went wrong");
-  //     }
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Something went wrong");
+      }
 
-  //     setGetAllTask(data.tasks);
-  //     // console.log(getAllTask);
-  //     console.log(Array.isArray(data));
-  //     console.log(data.tasks);
-  //   } catch (error) {
-  //     console.log("Error in getAllTasks:", error);
-  //   }
-  // };
+      setGetAllTask(data.tasks);
+      // console.log(getAllTask);
+      console.log(Array.isArray(data));
+      console.log(data.tasks);
+    } catch (error) {
+      console.log("Error in getAllTasks:", error);
+    }
+  };
   // create custom hook for rewards
   console.log("Wallet Balance:", walletBalance);
 
@@ -95,6 +96,7 @@ const Home = () => {
               reloadwalletBalance={getWalletBalance}
               setCompletedTasks={setCompletedTasks}
               setTotalReward={setTotalReward}
+              setTaskDeleted={setTaskDeleted}
             />
           </div>
 
@@ -104,6 +106,8 @@ const Home = () => {
               setCompletedTasks={setCompletedTasks}
               totalReward={totalReward}
               setTotalReward={setTotalReward}
+              taskDeleted={taskDeleted}
+              setTaskDeleted={setTaskDeleted}
             />
           </div>
         </div>
