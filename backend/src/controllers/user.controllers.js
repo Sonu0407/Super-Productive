@@ -154,6 +154,7 @@ export const getWalletBalance = async (req, res) => {
       const query = "SELECT wallet_balance FROM users WHERE id = $1";
       const values = [userId];
       const result = await db.query(query, values);
+      console.log(result.rows[0].wallet_balance);
       res.status(200).json({ wallet_balance: result.rows[0].wallet_balance });
     } catch (error) {
       console.error("Database error in getWalletBalance:", error);
@@ -169,6 +170,7 @@ export const updateUserWallet = async (req, res) => {
   try {
     const userId = req.userId;
 
+    // 1. Validate input first — no point hitting the DB otherwise
     if (
       !req.body ||
       req.body.wallet_balance === undefined ||
@@ -179,23 +181,42 @@ export const updateUserWallet = async (req, res) => {
         .json({ message: "Please enter the wallet_balance amount" });
     }
 
-    const wallet_balance = req.body.wallet_balance;
+    const amountToAdd = Number(req.body.wallet_balance);
 
-    if (isNaN(wallet_balance) || Number(wallet_balance) < 0) {
+    if (isNaN(amountToAdd) || amountToAdd < 0) {
       return res
         .status(400)
         .json({ message: "wallet_balance must be a valid positive number" });
     }
 
-    const query = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
-    const values = [Number(wallet_balance), userId];
-    const result = await db.query(query, values);
+    // 2. Fetch current balance
+    const selectQuery = "SELECT wallet_balance FROM users WHERE id = $1";
+    const selectResult = await db.query(selectQuery, [userId]);
 
-    if (result.rowCount === 0) {
+    if (selectResult.rowCount === 0) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json({ message: "Wallet updated successfully." });
+    // pg returns NUMERIC/DECIMAL as strings — must parse before doing math
+    const prevWalletBalance =
+      parseFloat(selectResult.rows[0].wallet_balance) || 0;
+    const newWalletBalance = prevWalletBalance + amountToAdd;
+
+    // 3. Update with the new total
+    const updateQuery = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
+    const updateResult = await db.query(updateQuery, [
+      newWalletBalance,
+      userId,
+    ]);
+
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      message: "Wallet updated successfully.",
+      wallet_balance: newWalletBalance,
+    });
   } catch (error) {
     console.log("Error in updateUserWallet", error);
     return res.status(500).json({ message: "Internal Server Error" });

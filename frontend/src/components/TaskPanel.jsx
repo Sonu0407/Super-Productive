@@ -87,6 +87,7 @@ const TasksPanel = ({
       toast.success("Task deleted successfully");
       setCompletedTasks((prev) => prev + 1);
       setTotalReward((prev) => prev + Number(task.rewards || 0));
+      localStorage.setItem("todayEarnings", totalReward);
       // deleteTaskSound.play();
     } catch (error) {
       toast.error(error.message);

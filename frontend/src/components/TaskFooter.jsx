@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const TaskFooter = ({ tasks, CompletedTasksRewards }) => {
   let totalRewards = 0;
@@ -11,8 +11,6 @@ const TaskFooter = ({ tasks, CompletedTasksRewards }) => {
       totalRewards += tasks[i].rewards ? tasks[i].rewards : 0;
     }
   }
-
-  // console.log(totalRewards);
 
   return (
     <div className="border-t border-gray-200 dark:border-[#4a4a4a] mt-6 pt-2 flex items-center justify-between">

@@ -98,10 +98,10 @@ const FocusTimer = ({
       // TODO: WHEN I CLICK ON RELOAD IT SHOULD RESET ALL VALUES EXSPECIALLY THE TIMER AND RING ONE
       setReloading(true);
       await getAllTasks();
-      setSelectedTask("");
-      setCurrentTask("");
-      setFocusSession(null);
-      setTimeLeft(null);
+      // setSelectedTask("");
+      // setCurrentTask("");
+      // setFocusSession(null);
+      // setTimeLeft(null);
     } finally {
       setReloading(false);
     }
@@ -232,7 +232,7 @@ const FocusTimer = ({
         try {
           setWalletUpdated(false);
           const url = "http://localhost:8000/api/auth/update/wallet";
-          const response = await fetch(url, {
+          const response = await fetch(url ? url : undefined, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -281,7 +281,7 @@ const FocusTimer = ({
           // console.log(currentTask);
           const url = `http://localhost:8000/api/tasks/${taskToDelete.id}`;
 
-          const response = await fetch(url, {
+          const response = await fetch(url ? url : undefined, {
             method: "DELETE",
             credentials: "include",
           });

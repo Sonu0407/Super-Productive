@@ -14,7 +14,16 @@ const Home = () => {
 
   // Task panel's
   const [completedTasks, setCompletedTasks] = useState(0); // 2
-  const [totalReward, setTotalReward] = useState(0); // 3
+  const [totalReward, setTotalReward] = useState(() => {
+    const storedValue = localStorage.getItem("todayEarnings");
+    return storedValue !== null ? Number(storedValue) : 0;
+  });
+
+  console.log(new Date().getDate());
+
+  useEffect(() => {
+    localStorage.setItem("todayEarnings", totalReward);
+  }, [totalReward]);
 
   console.log(volume);
 
