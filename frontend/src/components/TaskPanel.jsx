@@ -8,59 +8,24 @@ import toast from "react-hot-toast";
 import TaskModal from "./TaskModel";
 
 const TasksPanel = ({
-  completedTasks,
-  setCompletedTasks,
   totalReward,
   setTotalReward,
   taskDeleted,
   setTaskDeleted,
+  completedTaskCount,
 }) => {
   const [task, setTask] = useState("");
   const [reward, setReward] = useState(""); // no use no where used
   const [getAllTask, setGetAllTask] = useState([]); // 1
   const [selectedTask, setSelectedTask] = useState(null);
   const addTaskSound = new Audio("/sounds/add-task.wav");
-  // const [completedTasks, setCompletedTasks] = useState(0); // 2
-  // const [totalReward, setTotalReward] = useState(0); // 3
-  // const deleteTaskSound = new Audio("/sounds/delete-task.wav");
-
   useEffect(() => {
     getAllTasks();
     setTaskDeleted(false);
   }, [taskDeleted]);
 
-  const updateToCompleted = async (task) => {
-    try {
-      const url = `http://localhost:8000/api/tasks/${task.id}`;
-
-      const response = await fetch(url, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: task.title,
-          completed: true,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message);
-      }
-
-      return data;
-    } catch (error) {
-      console.log("Error in updateToCompleted", error);
-    }
-  };
-
   const handleDeleteTask = async (task) => {
     try {
-      await updateToCompleted(task);
-
       await new Promise((resolve) => setTimeout(resolve, 700));
 
       const url = `http://localhost:8000/api/tasks/${task.id}`;
@@ -85,7 +50,6 @@ const TasksPanel = ({
       console.log(task.rewards);
 
       toast.success("Task deleted successfully");
-      setCompletedTasks((prev) => prev + 1);
       setTotalReward((prev) => prev + Number(task.rewards || 0));
       localStorage.setItem("todayEarnings", totalReward);
       // deleteTaskSound.play();
@@ -159,7 +123,7 @@ const TasksPanel = ({
       {/* Header */}
       <TaskHeader
         totalNumberOfTasks={getAllTask.length}
-        numberOfCompletedTasks={completedTasks}
+        numberOfCompletedTasks={completedTaskCount}
       />
 
       <div className="p-4 lg:p-6 flex flex-col flex-1">

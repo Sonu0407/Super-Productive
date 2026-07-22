@@ -11,15 +11,24 @@ const Home = () => {
   const [volume, setVolume] = useState(30);
   const [walletBalance, setWalletBalance] = useState(null);
   const [taskDeleted, setTaskDeleted] = useState(false);
+  const [completedTaskCount, setCompletedTaskCount] = useState(0);
 
   // Task panel's
-  const [completedTasks, setCompletedTasks] = useState(0); // 2
   const [totalReward, setTotalReward] = useState(() => {
+    const today = new Date().toDateString();
+    const storedDate = localStorage.getItem("earningsDate");
     const storedValue = localStorage.getItem("todayEarnings");
-    return storedValue !== null ? Number(storedValue) : 0;
-  });
 
-  console.log(new Date().getDate());
+    if (storedDate === today) {
+      return storedValue ? Number(storedValue) : 0;
+    }
+
+    // New Day reset
+    localStorage.setItem("earningsDate", today);
+    localStorage.setItem("todayEarnings", 0);
+
+    return 0;
+  });
 
   useEffect(() => {
     localStorage.setItem("todayEarnings", totalReward);
@@ -103,20 +112,20 @@ const Home = () => {
               volume={volume}
               setVolume={setVolume}
               reloadwalletBalance={getWalletBalance}
-              setCompletedTasks={setCompletedTasks}
               setTotalReward={setTotalReward}
               setTaskDeleted={setTaskDeleted}
+              completedTaskCount={completedTaskCount}
+              setCompletedTaskCount={setCompletedTaskCount}
             />
           </div>
 
           <div>
             <TaskPanel
-              completedTasks={completedTasks}
-              setCompletedTasks={setCompletedTasks}
               totalReward={totalReward}
               setTotalReward={setTotalReward}
               taskDeleted={taskDeleted}
               setTaskDeleted={setTaskDeleted}
+              completedTaskCount={completedTaskCount}
             />
           </div>
         </div>

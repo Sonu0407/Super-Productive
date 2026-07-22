@@ -11,9 +11,10 @@ const FocusTimer = ({
   volume,
   setVolume,
   reloadwalletBalance,
-  setCompletedTasks,
   setTotalReward,
   setTaskDeleted,
+  completedTaskCount,
+  setCompletedTaskCount,
 }) => {
   const [currentTask, setCurrentTask] = useState("");
   const [focusSession, setFocusSession] = useState(0);
@@ -268,13 +269,43 @@ const FocusTimer = ({
   }, [timeLeft]);
 
   // console.log(currentTask.id); // it is giving the correct output
+  const updateToCompleted = async (task) => {
+    console.log(task);
+    try {
+      const url = `http://localhost:8000/api/tasks/${task.id}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: task.title,
+          completed: true,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message);
+      } else {
+        setCompletedTaskCount((prev) => prev + 1);
+      }
+
+      return data;
+    } catch (error) {
+      console.log("Error in updateToCompleted", error);
+    }
+  };
 
   useEffect(() => {
     if (walletUpdated) {
       // Deleting the current task after updating the wallet
       const deleteTask = async (currentTask) => {
         try {
-          // await updateToCompleted(task);
+          await updateToCompleted(currentTask);
           // TODO: AFTER Focus timer is over and task gets delete then nothing task is getting and timer also is not updating check why? TMR
           // await new Promise((resolve) => setTimeout(resolve, 700));
           const taskToDelete = currentTask;
@@ -307,7 +338,6 @@ const FocusTimer = ({
           // console.log(task.rewards);
 
           toast.success("Task deleted successfully");
-          setCompletedTasks((prev) => prev + 1);
           setTotalReward((prev) => prev + Number(taskToDelete.rewards || 0));
           setSelectedTask("");
           setCurrentTask("");
@@ -341,14 +371,50 @@ const FocusTimer = ({
           </span>
 
           <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            {/* {Array.from({ length: completedTaskCount }).map((_, index) => {
+              const element = document.getElementById(index);
+              const colorFilled = (element.backgroundColor = "red");
 
-            <span className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"></span>
+              return (
+                <span
+                  key={index}
+                  id={index}
+                  className={`w-2.5 h-2.5 rounded-full bg-${colorFilled}`}
+                ></span>
+              );
+            })} */}
+            {/* <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span> */}
+            <span
+              disabled
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="0"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="1"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="2"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="3"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="4"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
+            <span
+              id="5"
+              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+            ></span>
           </div>
         </div>
       </div>
