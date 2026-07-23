@@ -225,11 +225,54 @@ const FocusTimer = ({
 
   useEffect(() => {
     console.log("Come here!");
+    const bonus =
+      completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false; // for bonus reward
+    if (bonus) {
+      // update the wallet with $0.50
+      const updateWalletBalanceWithBonus = async () => {
+        try {
+          // setWalletUpdated(false);
+          const url = "http://localhost:8000/api/auth/update/wallet";
+          const response = await fetch(url ? url : undefined, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              wallet_balance: 0.5, // bonus reward
+            }),
+          });
 
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(
+              data.error || data.message || "Something went wrong",
+            );
+          } else {
+            await reloadwalletBalance();
+            cashRegisterSound.play();
+          }
+
+          console.log(data.message);
+        } catch (error) {
+          console.log("Error in updateWalletBalanceWithBonus", error);
+        } finally {
+          // setWalletUpdated(true);
+        }
+      };
+      updateWalletBalanceWithBonus();
+    }
+  }, [completedTaskCount]);
+
+  useEffect(() => {
     if (timeLeft === 0 && selectedTask !== null) {
       // update the wallet balance with CURRENT TASK REWARD
       console.log("Come here!");
-      var updateWalletBalance = async () => {
+      // update wallet when streaks are > 3
+      // if (completedTaskCount % 3 === 0)
+      const updateWalletBalance = async () => {
         try {
           setWalletUpdated(false);
           const url = "http://localhost:8000/api/auth/update/wallet";
@@ -263,6 +306,7 @@ const FocusTimer = ({
         }
       };
       updateWalletBalance();
+
       // reloadwalletBalance();
     }
     console.log("Came here");
@@ -291,7 +335,7 @@ const FocusTimer = ({
       if (!response.ok) {
         throw new Error(data.error || data.message);
       } else {
-        setCompletedTaskCount((prev) => prev + 1);
+        setCompletedTaskCount((prev) => (prev !== 7 ? prev + 1 : 7));
       }
 
       return data;
@@ -357,6 +401,9 @@ const FocusTimer = ({
   console.log(strokeDashoffset);
   console.log(getAllTask);
 
+  // for black streaks
+  const blackStreaks = 7;
+
   return (
     <div className="bg-white dark:bg-[#2f2f2f] rounded-3xl border border-gray-200 dark:border-[#505050] overflow-hidden">
       {/* Header */}
@@ -371,23 +418,26 @@ const FocusTimer = ({
           </span>
 
           <div className="flex gap-1.5">
-            {/* {Array.from({ length: completedTaskCount }).map((_, index) => {
-              const element = document.getElementById(index);
-              const colorFilled = (element.backgroundColor = "red");
-
-              return (
+            {Array.from({ length: completedTaskCount }).map(
+              (_, index) => (
+                console.log(completedTaskCount),
+                (
+                  <span
+                    key={index}
+                    className="w-2.5 h-2.5 rounded-full bg-red-500"
+                  ></span>
+                )
+              ),
+            )}
+            {Array.from({ length: blackStreaks - completedTaskCount }).map(
+              (_, index) => (
                 <span
                   key={index}
-                  id={index}
-                  className={`w-2.5 h-2.5 rounded-full bg-${colorFilled}`}
+                  className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
                 ></span>
-              );
-            })} */}
-            {/* <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span> */}
-            <span
+              ),
+            )}
+            {/* <span
               disabled
               className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
             ></span>
@@ -414,7 +464,7 @@ const FocusTimer = ({
             <span
               id="5"
               className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
+            ></span> */}
           </div>
         </div>
       </div>
