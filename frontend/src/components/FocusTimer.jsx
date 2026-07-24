@@ -35,6 +35,7 @@ const FocusTimer = ({
   const cashRegisterSound = new Audio("/sounds/cash registered sound.mp3");
   const deleteTaskSound = new Audio("/sounds/delete-task.wav");
   const [walletUpdated, setWalletUpdated] = useState(false);
+  let BonusRewardSound = new Audio("/sounds/Bonus reward sound.mp3");
 
   useEffect(() => {
     if (selectedSong === null || selectedSong === undefined) {
@@ -223,6 +224,9 @@ const FocusTimer = ({
 
   console.log("Time Left:", timeLeft);
 
+  // boolean value for the status of Bonus reward
+  const [loadingBonus, setLoadingBonus] = useState(false);
+
   useEffect(() => {
     console.log("Come here!");
     const bonus =
@@ -231,6 +235,8 @@ const FocusTimer = ({
       // update the wallet with $0.50
       const updateWalletBalanceWithBonus = async () => {
         try {
+          setLoadingBonus(true);
+          console.log(loadingBonus);
           // setWalletUpdated(false);
           const url = "http://localhost:8000/api/auth/update/wallet";
           const response = await fetch(url ? url : undefined, {
@@ -252,7 +258,10 @@ const FocusTimer = ({
             );
           } else {
             await reloadwalletBalance();
-            cashRegisterSound.play();
+            console.log("I am at updateWalletBalanceWithBonus");
+            deleteTaskSound.pause();
+            cashRegisterSound.pause();
+            BonusRewardSound.play();
           }
 
           console.log(data.message);
@@ -260,6 +269,7 @@ const FocusTimer = ({
           console.log("Error in updateWalletBalanceWithBonus", error);
         } finally {
           // setWalletUpdated(true);
+          // setLoadingBonus(false);
         }
       };
       updateWalletBalanceWithBonus();
@@ -267,7 +277,10 @@ const FocusTimer = ({
   }, [completedTaskCount]);
 
   useEffect(() => {
+    console.log(loadingBonus);
     if (timeLeft === 0 && selectedTask !== null) {
+      const bonus =
+        completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false;
       // update the wallet balance with CURRENT TASK REWARD
       console.log("Come here!");
       // update wallet when streaks are > 3
@@ -295,7 +308,13 @@ const FocusTimer = ({
             );
           } else {
             await reloadwalletBalance();
-            cashRegisterSound.play();
+            if (bonus) {
+              BonusRewardSound.play();
+            } else {
+              console.log("Play");
+              console.log(loadingBonus);
+              cashRegisterSound.play();
+            }
           }
 
           console.log(data.message);
@@ -388,15 +407,24 @@ const FocusTimer = ({
           setFocusSession(0);
           setTimeLeft(0);
           setTaskDeleted(true);
-          deleteTaskSound.play();
+          if (loadingBonus) {
+            deleteTaskSound.pause();
+          } else {
+            deleteTaskSound.play();
+          }
         } catch (error) {
           console.log("Error in deleteTask", error);
           toast.error(error.message);
+        } finally {
+          // loadingBonus = false;
         }
       };
       deleteTask(currentTask);
     }
+    setLoadingBonus(false);
   }, [walletUpdated]);
+
+  // setLoadingBonus(false);
 
   console.log(strokeDashoffset);
   console.log(getAllTask);
