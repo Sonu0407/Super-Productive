@@ -11,7 +11,24 @@ const Home = () => {
   const [volume, setVolume] = useState(30);
   const [walletBalance, setWalletBalance] = useState(null);
   const [taskDeleted, setTaskDeleted] = useState(false);
-  const [completedTaskCount, setCompletedTaskCount] = useState(0);
+  const [completedTaskCount, setCompletedTaskCount] = useState(() => {
+    const today = new Date().toDateString();
+    const storedDate = localStorage.getItem("earningsDate");
+    const storedValue = localStorage.getItem("todayCompletedTasks");
+
+    if (storedDate === today) {
+      return storedValue ? Number(storedValue) : 0;
+    }
+
+    // New Day reset
+    localStorage.setItem("todayCompletedTasks", 0);
+
+    return 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("todayCompletedTasks", completedTaskCount);
+  }, [completedTaskCount]);
 
   // Task panel's
   const [totalReward, setTotalReward] = useState(() => {

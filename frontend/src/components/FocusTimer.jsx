@@ -465,34 +465,6 @@ const FocusTimer = ({
                 ></span>
               ),
             )}
-            {/* <span
-              disabled
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="0"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="1"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="2"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="3"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="4"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span>
-            <span
-              id="5"
-              className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-            ></span> */}
           </div>
         </div>
       </div>
