@@ -1,32 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 
-const RewardBalance = () => {
-  const [walletBalance, setWalletBalance] = useState(null);
-
-  useEffect(() => {
-    getWalletBalance();
-  }, []);
-
-  const getWalletBalance = async () => {
-    try {
-      const url = "http://localhost:8000/api/tasks/wallet";
-      const response = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message || "Something went wrong");
-      }
-
-      setWalletBalance(data.wallet_balance);
-    } catch (error) {
-      console.error("Error in getWalletBalance:", error);
-    }
-  };
+const RewardBalance = ({ walletBalance }) => {
   return (
     <div
       className="
@@ -56,7 +31,7 @@ const RewardBalance = () => {
         <div className="text-right max-w-sm">
           <p className="text-2xl text-amber-800 leading-snug">
             Earn
-            <span className="font-bold"> $2.00 </span>
+            <span className="font-bold"> $💸 </span>
             more to unlock the
             <br />
             next reward tier

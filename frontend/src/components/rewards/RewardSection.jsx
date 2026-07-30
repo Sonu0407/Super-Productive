@@ -1,6 +1,7 @@
 import RewardCard from "./RewardCard";
 
 const RewardSection = ({ title, rewards }) => {
+  const balance = Number(localStorage.getItem("wallet_balance"));
   return (
     <div className="mb-10">
       {/* Section Heading */}
@@ -18,7 +19,7 @@ const RewardSection = ({ title, rewards }) => {
             title={reward.title}
             subtitle={reward.subtitle}
             price={reward.price}
-            locked={reward.locked}
+            locked={balance < reward.price}
           />
         ))}
       </div>
@@ -27,3 +28,5 @@ const RewardSection = ({ title, rewards }) => {
 };
 
 export default RewardSection;
+
+// localStorage.getItem("wallet_balance")

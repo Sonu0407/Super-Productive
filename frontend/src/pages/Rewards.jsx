@@ -11,6 +11,9 @@ import {
 import { AiFillAmazonCircle } from "react-icons/ai";
 import { SiZomato } from "react-icons/si";
 import { RiNetflixFill } from "react-icons/ri";
+import { useEffect, useState } from "react";
+
+const wallet = Number(localStorage.getItem("wallet_balance")); // localStorage always returns string, not a number
 
 const gamingRewards = [
   {
@@ -18,24 +21,21 @@ const gamingRewards = [
     color: "bg-slate-800",
     title: "Steam Wallet",
     subtitle: "$5 game credit",
-    price: "$5.00",
-    locked: true,
+    price: 100.0,
   },
   {
     icon: <FaPlaystation />,
     color: "bg-blue-700",
     title: "PlayStation Store",
     subtitle: "$5 store credit",
-    price: "$5.00",
-    locked: true,
+    price: 160.0,
   },
   {
     icon: <FaXbox />,
     color: "bg-green-700",
     title: "Xbox Gift Card",
     subtitle: "$5 store credit",
-    price: "$5.00",
-    locked: true,
+    price: 200.0,
   },
 ];
 
@@ -45,24 +45,21 @@ const shoppingRewards = [
     color: "bg-orange-500",
     title: "Amazon",
     subtitle: "$5 gift card",
-    price: "$5.00",
-    locked: true,
+    price: 150.0,
   },
   {
     icon: <SiZomato />,
     color: "bg-red-500",
     title: "Zomato",
     subtitle: "$3 food voucher",
-    price: "$3.00",
-    locked: false,
+    price: 50.0,
   },
   {
     icon: "M",
     color: "bg-pink-500",
     title: "Myntra",
     subtitle: "$4 shopping voucher",
-    price: "$4.00",
-    locked: true,
+    price: 120.0,
   },
 ];
 
@@ -72,32 +69,58 @@ const entertainmentRewards = [
     color: "bg-green-500",
     title: "Spotify Premium",
     subtitle: "1 month credit",
-    price: "$2.50",
-    locked: false,
+    price: 65.5,
   },
   {
     icon: <RiNetflixFill />,
     color: "bg-red-600",
     title: "Netflix",
     subtitle: "$5 gift card",
-    price: "$5.00",
-    locked: true,
+    price: 500.0,
   },
   {
     icon: <FaDiscord />,
     color: "bg-indigo-400",
     title: "Discord Nitro",
     subtitle: "1 month credit",
-    price: "$2.00",
-    locked: false,
+    price: 100.0,
   },
 ];
 
 const Rewards = () => {
+  const [walletBalance, setWalletBalance] = useState(null);
+
+  useEffect(() => {
+    getWalletBalance();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("wallet_balance", walletBalance);
+  }, [walletBalance]);
+
+  const getWalletBalance = async () => {
+    try {
+      const url = "http://localhost:8000/api/auth/wallet";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Something went wrong");
+      }
+
+      setWalletBalance(data.wallet_balance);
+    } catch (error) {
+      console.error("Error in getWalletBalance:", error);
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f0f0f]">
       <div className="max-w-[1440px] mx-auto px-4 py-4">
-        <Navbar />
+        <Navbar walletBalance={walletBalance} />
 
         <div className="mt-8">
           {/* Header */}
@@ -112,7 +135,7 @@ const Rewards = () => {
           </div>
 
           {/* Balance Card */}
-          <RewardBalance />
+          <RewardBalance walletBalance={walletBalance} />
 
           {/* Gaming */}
           <RewardSection title="GAMING VOUCHERS" rewards={gamingRewards} />

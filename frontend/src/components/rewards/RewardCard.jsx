@@ -1,4 +1,13 @@
+import { useState } from "react";
+import RedeemModal from "./RedeemModal";
+
 const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
+  const [selectedReward, setSelectedReward] = useState({
+    title: "",
+    subtitle: "",
+    price: 0,
+  });
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div
       className="
@@ -43,13 +52,18 @@ const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
       {/* Price */}
       <div className="mt-5">
         <p className="text-4xl font-bold text-gray-900 dark:text-white">
-          {price}
+          ${price.toFixed(2)}
         </p>
       </div>
 
       {/* Button */}
       <button
         disabled={locked}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setSelectedReward({ title, subtitle, price });
+          console.log(selectedReward);
+        }}
         className={`
           w-full
           mt-6
@@ -78,6 +92,9 @@ const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
       >
         {locked ? "Locked" : "Redeem"}
       </button>
+      {isOpen && (
+        <RedeemModal onClose={() => setIsOpen(false)} reward={selectedReward} />
+      )}
     </div>
   );
 };

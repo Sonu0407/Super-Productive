@@ -51,7 +51,7 @@ const RewardCard = ({ task }) => {
               dark:text-[#8B5A00]
             "
           >
-            Bonus at 3 tasks
+            🎁 Bonus every 3 completed tasks ✅
           </p>
 
           <h3
