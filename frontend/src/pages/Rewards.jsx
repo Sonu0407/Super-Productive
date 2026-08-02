@@ -94,10 +94,6 @@ const Rewards = () => {
     getWalletBalance();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("wallet_balance", walletBalance);
-  }, [walletBalance]);
-
   const getWalletBalance = async () => {
     try {
       const url = "http://localhost:8000/api/auth/wallet";
@@ -138,7 +134,11 @@ const Rewards = () => {
           <RewardBalance walletBalance={walletBalance} />
 
           {/* Gaming */}
-          <RewardSection title="GAMING VOUCHERS" rewards={gamingRewards} />
+          <RewardSection
+            title="GAMING VOUCHERS"
+            rewards={gamingRewards}
+            walletBalance={walletBalance}
+          />
 
           {/* Shopping */}
           <RewardSection

@@ -222,3 +222,65 @@ export const updateUserWallet = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const updateUserWalletDecrease = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    // 1. Validate input first — no point hitting the DB otherwise
+    if (
+      !req.body ||
+      req.body.wallet_balance === undefined ||
+      req.body.wallet_balance === null
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Please enter the wallet_balance amount" });
+    }
+
+    const amountToDeduct = Number(req.body.wallet_balance);
+
+    console.log("amount", amountToDeduct);
+
+    if (isNaN(amountToDeduct) || amountToDeduct < 0) {
+      return res
+        .status(400)
+        .json({ message: "wallet_balance must be a valid positive number" });
+    }
+
+    // 2. Fetch current balance
+    const selectQuery = "SELECT wallet_balance FROM users WHERE id = $1";
+    const selectResult = await db.query(selectQuery, [userId]);
+
+    if (selectResult.rowCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // pg returns NUMERIC/DECIMAL as strings — must parse before doing math
+    const prevWalletBalance =
+      parseFloat(selectResult.rows[0].wallet_balance) || 0;
+    const newWalletBalance = prevWalletBalance - amountToDeduct;
+
+    console.log("prev", prevWalletBalance);
+    console.log("new", newWalletBalance);
+
+    // 3. Update with the new total
+    const updateQuery = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
+    const updateResult = await db.query(updateQuery, [
+      newWalletBalance,
+      userId,
+    ]);
+
+    if (updateResult.rowCount === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      message: "Wallet updated successfully.",
+      wallet_balance: newWalletBalance,
+    });
+  } catch (error) {
+    console.log("Error in updateUserWallet", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

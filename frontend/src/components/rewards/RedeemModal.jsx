@@ -1,7 +1,66 @@
 import { X } from "lucide-react";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import AuthContext from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
-const RedeemModal = ({ onClose, reward }) => {
+const RedeemModal = ({ onClose, reward, selectedReward }) => {
+  const { authUser } = useContext(AuthContext);
+  const [newEmail, setNewEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSendMail = async () => {
+    try {
+      setLoading(true);
+      const url = "http://localhost:8000/api/sendMail/";
+      const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: newEmail,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        return toast.success("Email sent successfully");
+      }
+    } catch (error) {
+      console.error("Error in handleSendMail", error);
+      return toast.error(error);
+    } finally {
+      setLoading(false);
+      const updateWalletBalanceDecrease = async () => {
+        try {
+          const url = "http://localhost:8000/api/auth/update/wallet/decrease";
+          const response = await fetch(url, {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              wallet_balance: selectedReward.price,
+            }),
+          });
+
+          const data = await response.json();
+          if (response.ok) {
+            window.location.reload();
+            return toast.success("Wallet Updated Successfully!.");
+          }
+        } catch (error) {
+          console.error("Error in updateWalletBalanceDecrease", error);
+          return toast.error(error);
+        }
+      };
+      updateWalletBalanceDecrease();
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4">
       <div className="w-full max-w-lg bg-white dark:bg-[#2a2a2a] rounded-3xl border border-gray-200 dark:border-[#4a4a4a] shadow-2xl overflow-hidden">
@@ -23,7 +82,7 @@ const RedeemModal = ({ onClose, reward }) => {
           {/* Task Name */}
           <div>
             <label className="block mb-2 font-semibold text-gray-700 dark:text-gray-300">
-              Task Name
+              Reward Provider
             </label>
 
             <input
@@ -76,10 +135,44 @@ const RedeemModal = ({ onClose, reward }) => {
               readOnly
             />
           </div>
+
+          {/* Email */}
+          <div>
+            <label className="block mb-2 font-semibold text-gray-700 dark:text-gray-300">
+              Email
+            </label>
+
+            <input
+              type="text"
+              value={newEmail} // else use authUser.email for fixed email
+              onChange={(e) => {
+                setNewEmail(e.target.value);
+              }}
+              className="
+                w-full
+                rounded-xl
+                px-4
+                py-3
+                bg-[#e9edf3]
+                dark:bg-[#333333]
+                border
+                border-gray-300
+                dark:border-[#555]
+                outline-none
+                focus:ring-2
+                focus:ring-red-400
+                dark:text-white
+              "
+              // readOnly
+            />
+          </div>
         </div>
         {/* Footer */}
         <div className="border-t border-gray-200 dark:border-[#4a4a4a] px-6 py-5 flex justify-end gap-3">
           <button
+            onClick={() => {
+              handleSendMail();
+            }}
             className="
               px-6
               py-3
@@ -91,7 +184,7 @@ const RedeemModal = ({ onClose, reward }) => {
               transition
             "
           >
-            Redeem
+            {loading ? "Redeeming..." : "Redeem"}
           </button>
         </div>
       </div>

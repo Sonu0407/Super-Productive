@@ -93,7 +93,11 @@ const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
         {locked ? "Locked" : "Redeem"}
       </button>
       {isOpen && (
-        <RedeemModal onClose={() => setIsOpen(false)} reward={selectedReward} />
+        <RedeemModal
+          onClose={() => setIsOpen(false)}
+          reward={selectedReward}
+          selectedReward={selectedReward}
+        />
       )}
     </div>
   );

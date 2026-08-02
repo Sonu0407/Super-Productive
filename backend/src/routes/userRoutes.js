@@ -6,6 +6,7 @@ import {
   logoutUser,
   registerUser,
   updateUserWallet,
+  updateUserWalletDecrease,
 } from "../controllers/user.controllers.js";
 import protectedRoute from "../middlewares/protectedRoute.js";
 const userRouter = Router();
@@ -16,5 +17,10 @@ userRouter.post("/login", loginUser);
 userRouter.post("/logout", logoutUser);
 userRouter.get("/wallet", protectedRoute, getWalletBalance);
 userRouter.post("/update/wallet", protectedRoute, updateUserWallet);
+userRouter.post(
+  "/update/wallet/decrease",
+  protectedRoute,
+  updateUserWalletDecrease,
+);
 
 export default userRouter;

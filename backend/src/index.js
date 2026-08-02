@@ -8,6 +8,7 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes.js";
 import taskRouter from "./routes/taskRoutes.js";
 import TimerRouter from "./routes/timerRoutes.js";
+import mailRouter from "./routes/mailRoutes.js";
 import db from "./database/db.js";
 
 const app = express();
@@ -26,6 +27,8 @@ app.use(cookieParser());
 app.use("/api/auth", userRouter);
 app.use("/api/tasks", taskRouter);
 app.use("/api/setTimer", TimerRouter);
+// send mail
+app.use("/api/sendMail", mailRouter);
 
 db.connect()
   .then(() => {
