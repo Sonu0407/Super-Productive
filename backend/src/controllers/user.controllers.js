@@ -154,7 +154,7 @@ export const getWalletBalance = async (req, res) => {
       const query = "SELECT wallet_balance FROM users WHERE id = $1";
       const values = [userId];
       const result = await db.query(query, values);
-      console.log(result.rows[0].wallet_balance);
+      // console.log(result.rows[0].wallet_balance);
       res.status(200).json({ wallet_balance: result.rows[0].wallet_balance });
     } catch (error) {
       console.error("Database error in getWalletBalance:", error);
@@ -227,7 +227,6 @@ export const updateUserWalletDecrease = async (req, res) => {
   try {
     const userId = req.userId;
 
-    // 1. Validate input first — no point hitting the DB otherwise
     if (
       !req.body ||
       req.body.wallet_balance === undefined ||
@@ -240,15 +239,12 @@ export const updateUserWalletDecrease = async (req, res) => {
 
     const amountToDeduct = Number(req.body.wallet_balance);
 
-    console.log("amount", amountToDeduct);
-
     if (isNaN(amountToDeduct) || amountToDeduct < 0) {
       return res
         .status(400)
         .json({ message: "wallet_balance must be a valid positive number" });
     }
 
-    // 2. Fetch current balance
     const selectQuery = "SELECT wallet_balance FROM users WHERE id = $1";
     const selectResult = await db.query(selectQuery, [userId]);
 
@@ -256,15 +252,10 @@ export const updateUserWalletDecrease = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // pg returns NUMERIC/DECIMAL as strings — must parse before doing math
     const prevWalletBalance =
       parseFloat(selectResult.rows[0].wallet_balance) || 0;
     const newWalletBalance = prevWalletBalance - amountToDeduct;
 
-    console.log("prev", prevWalletBalance);
-    console.log("new", newWalletBalance);
-
-    // 3. Update with the new total
     const updateQuery = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
     const updateResult = await db.query(updateQuery, [
       newWalletBalance,

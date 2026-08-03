@@ -1,12 +1,45 @@
 import { X } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
+import useUpdateWalletBalance from "../../hooks/UpdateWalletBalanceHook";
 import toast from "react-hot-toast";
 
-const RedeemModal = ({ onClose, reward, selectedReward }) => {
+const RedeemModal = ({
+  onClose,
+  reward,
+  selectedReward,
+  reloadWalletBalance,
+}) => {
   const { authUser } = useContext(AuthContext);
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  // const walletBalance = useUpdateWalletBalance();
+
+  const [walletBalance, setWalletBalance] = useState(null);
+
+  useEffect(() => {
+    getWalletBalance();
+  }, []);
+
+  const getWalletBalance = async () => {
+    try {
+      const url = "http://localhost:8000/api/auth/wallet";
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Something went wrong");
+      }
+
+      setWalletBalance(data.wallet_balance);
+    } catch (error) {
+      console.error("Error in getWalletBalance:", error);
+    }
+  };
 
   const handleSendMail = async () => {
     try {
@@ -49,7 +82,8 @@ const RedeemModal = ({ onClose, reward, selectedReward }) => {
 
           const data = await response.json();
           if (response.ok) {
-            window.location.reload();
+            onClose();
+            await reloadWalletBalance(); //prop drilling happended here
             return toast.success("Wallet Updated Successfully!.");
           }
         } catch (error) {

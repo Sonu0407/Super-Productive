@@ -1,7 +1,15 @@
 import { useState } from "react";
 import RedeemModal from "./RedeemModal";
 
-const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
+const RewardCard = ({
+  icon,
+  color,
+  title,
+  subtitle,
+  price,
+  locked,
+  reloadWalletBalance,
+}) => {
   const [selectedReward, setSelectedReward] = useState({
     title: "",
     subtitle: "",
@@ -97,6 +105,7 @@ const RewardCard = ({ icon, color, title, subtitle, price, locked }) => {
           onClose={() => setIsOpen(false)}
           reward={selectedReward}
           selectedReward={selectedReward}
+          reloadWalletBalance={reloadWalletBalance}
         />
       )}
     </div>

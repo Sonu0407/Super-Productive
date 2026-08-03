@@ -138,16 +138,24 @@ const Rewards = () => {
             title="GAMING VOUCHERS"
             rewards={gamingRewards}
             walletBalance={walletBalance}
+            reloadWalletBalance={getWalletBalance}
           />
 
           {/* Shopping */}
           <RewardSection
             title="SHOPPING & FOOD VOUCHERS"
             rewards={shoppingRewards}
+            walletBalance={walletBalance}
+            reloadWalletBalance={getWalletBalance}
           />
 
           {/* Entertainment */}
-          <RewardSection title="ENTERTAINMENT" rewards={entertainmentRewards} />
+          <RewardSection
+            title="ENTERTAINMENT"
+            rewards={entertainmentRewards}
+            walletBalance={walletBalance}
+            reloadWalletBalance={getWalletBalance}
+          />
         </div>
       </div>
     </div>

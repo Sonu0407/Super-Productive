@@ -1,34 +1,13 @@
 import { useEffect, useState } from "react";
 import RewardCard from "./RewardCard";
 
-const RewardSection = ({ title, rewards }) => {
+const RewardSection = ({
+  title,
+  rewards,
+  walletBalance,
+  reloadWalletBalance,
+}) => {
   const balance = Number(localStorage.getItem("wallet_balance"));
-
-  const [walletBalance, setWalletBalance] = useState(null);
-
-  useEffect(() => {
-    getWalletBalance();
-  }, []);
-
-  const getWalletBalance = async () => {
-    try {
-      const url = "http://localhost:8000/api/auth/wallet";
-      const response = await fetch(url, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message || "Something went wrong");
-      }
-
-      setWalletBalance(data.wallet_balance);
-    } catch (error) {
-      console.error("Error in getWalletBalance:", error);
-    }
-  };
 
   return (
     <div className="mb-10">
@@ -48,6 +27,7 @@ const RewardSection = ({ title, rewards }) => {
             subtitle={reward.subtitle}
             price={reward.price}
             locked={walletBalance < reward.price}
+            reloadWalletBalance={reloadWalletBalance}
           />
         ))}
       </div>
@@ -56,5 +36,3 @@ const RewardSection = ({ title, rewards }) => {
 };
 
 export default RewardSection;
-
-// localStorage.getItem("wallet_balance")
