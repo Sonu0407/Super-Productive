@@ -7,6 +7,7 @@ const RewardCard = ({
   title,
   subtitle,
   price,
+  code,
   locked,
   reloadWalletBalance,
 }) => {
@@ -14,6 +15,7 @@ const RewardCard = ({
     title: "",
     subtitle: "",
     price: 0,
+    code: 0,
   });
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -69,8 +71,12 @@ const RewardCard = ({
         disabled={locked}
         onClick={() => {
           setIsOpen(!isOpen);
-          setSelectedReward({ title, subtitle, price });
-          console.log(selectedReward);
+          setSelectedReward({ title, subtitle, price, code });
+          // console.log(
+          //   selectedReward.title,
+          //   selectedReward.subtitle,
+          //   selectedReward.price,
+          // );
         }}
         className={`
           w-full

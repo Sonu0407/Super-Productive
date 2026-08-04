@@ -26,6 +26,7 @@ const RewardSection = ({
             title={reward.title}
             subtitle={reward.subtitle}
             price={reward.price}
+            code={reward.code}
             locked={walletBalance < reward.price}
             reloadWalletBalance={reloadWalletBalance}
           />

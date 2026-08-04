@@ -171,7 +171,7 @@ const FocusTimer = ({
           }
           return prev - 1;
         });
-      }, 100);
+      }, 1000);
     } else {
       clearInterval(intervalRef.current);
     }

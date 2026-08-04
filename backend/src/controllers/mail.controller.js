@@ -1,17 +1,17 @@
 import transporter from "../config/nodeMailer.js";
+import generateMongoDBId from "../utils/generateMongoDBId.js";
+import { generatePin } from "../utils/generatePin.js";
 
-const name = "Super Productive User";
-const rewardName = "Super Productive Reward";
-const rewardProvider = "Super Productive";
-const rewardLink = "https://super-productive.vercel.app/";
-const rewardCode = "123456";
-const pin = "1234";
 const orderId = "123456";
-const expiryDate = "2023-12-31";
+const date = new Date();
+date.setFullYear(date.getFullYear() + 1);
 
 export const sendMail = async (req, res) => {
   try {
-    const { to } = req.body;
+    const { to, name, reward, rewardProvider, rewardCode } = req.body;
+    const pin = await generatePin();
+    const orderId = await generateMongoDBId();
+    const expiryDate = date.toLocaleDateString();
     const mailOptions = {
       from: `"Super Productive" <${process.env.USER}>`,
       to,
@@ -60,7 +60,7 @@ export const sendMail = async (req, res) => {
 
             <tr>
             <td><b>Reward</b></td>
-            <td>${rewardName}</td>
+            <td>${reward}</td>
             </tr>
 
             <tr>

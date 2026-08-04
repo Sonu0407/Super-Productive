@@ -22,6 +22,7 @@ const gamingRewards = [
     title: "Steam Wallet",
     subtitle: "$5 game credit",
     price: 100.0,
+    code: 1,
   },
   {
     icon: <FaPlaystation />,
@@ -29,6 +30,7 @@ const gamingRewards = [
     title: "PlayStation Store",
     subtitle: "$5 store credit",
     price: 160.0,
+    code: 2,
   },
   {
     icon: <FaXbox />,
@@ -36,6 +38,7 @@ const gamingRewards = [
     title: "Xbox Gift Card",
     subtitle: "$5 store credit",
     price: 200.0,
+    code: 3,
   },
 ];
 
@@ -46,6 +49,7 @@ const shoppingRewards = [
     title: "Amazon",
     subtitle: "$5 gift card",
     price: 150.0,
+    code: 4,
   },
   {
     icon: <SiZomato />,
@@ -53,6 +57,7 @@ const shoppingRewards = [
     title: "Zomato",
     subtitle: "$3 food voucher",
     price: 50.0,
+    code: 5,
   },
   {
     icon: "M",
@@ -60,6 +65,7 @@ const shoppingRewards = [
     title: "Myntra",
     subtitle: "$4 shopping voucher",
     price: 120.0,
+    code: 6,
   },
 ];
 
@@ -70,6 +76,7 @@ const entertainmentRewards = [
     title: "Spotify Premium",
     subtitle: "1 month credit",
     price: 65.5,
+    code: 7,
   },
   {
     icon: <RiNetflixFill />,
@@ -77,6 +84,7 @@ const entertainmentRewards = [
     title: "Netflix",
     subtitle: "$5 gift card",
     price: 500.0,
+    code: 8,
   },
   {
     icon: <FaDiscord />,
@@ -84,6 +92,7 @@ const entertainmentRewards = [
     title: "Discord Nitro",
     subtitle: "1 month credit",
     price: 100.0,
+    code: 9,
   },
 ];
 

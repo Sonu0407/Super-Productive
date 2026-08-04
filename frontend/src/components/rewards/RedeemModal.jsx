@@ -1,7 +1,6 @@
 import { X } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
-import useUpdateWalletBalance from "../../hooks/UpdateWalletBalanceHook";
 import toast from "react-hot-toast";
 
 const RedeemModal = ({
@@ -13,7 +12,6 @@ const RedeemModal = ({
   const { authUser } = useContext(AuthContext);
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  // const walletBalance = useUpdateWalletBalance();
 
   const [walletBalance, setWalletBalance] = useState(null);
 
@@ -42,6 +40,7 @@ const RedeemModal = ({
   };
 
   const handleSendMail = async () => {
+    const username = authUser.firstname + " " + authUser.lastname;
     try {
       setLoading(true);
       const url = "http://localhost:8000/api/sendMail/";
@@ -53,6 +52,10 @@ const RedeemModal = ({
         },
         body: JSON.stringify({
           to: newEmail,
+          name: username,
+          reward: selectedReward.subtitle,
+          rewardProvider: selectedReward.title,
+          rewardCode: selectedReward.code,
         }),
       });
 
