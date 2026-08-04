@@ -2,10 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../context/AuthContext";
+import user from "../../public/images/user.png";
 
 const Navbar = ({ walletBalance }) => {
   const navigate = useNavigate();
   const { checkAuth } = useContext(AuthContext);
+  const { authUser } = useContext(AuthContext);
 
   const [animateReward, setAnimateReward] = useState(false);
   const [rewardIncrease, setRewardIncrease] = useState(null);
@@ -57,7 +59,7 @@ const Navbar = ({ walletBalance }) => {
 
   return (
     <div className="bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#4a4a4a] rounded-3xl px-6 py-4 flex items-center justify-between">
-      <div className="flex gap-6">
+      <div className="flex gap-6 justify-center items-center">
         <Link to="/" className="font-semibold text-gray-900 dark:text-white">
           Home
         </Link>
@@ -66,7 +68,11 @@ const Navbar = ({ walletBalance }) => {
           Rewards
         </Link>
 
-        <button className="text-gray-500 dark:text-[#c8c8c8]">History</button>
+        {/* <img src={user} alt="User" className="h-5 w-5" /> */}
+        <button className="text-gray-500 dark:text-[#c8c8c8] flex gap-4 justify-center items-center">
+          <img src={user} alt="User" className="h-12 w-12" />
+          {authUser.firstname + " " + authUser.lastname}
+        </button>
       </div>
 
       <h1 className="text-2xl lg:text-4xl font-bold text-black dark:text-white">
