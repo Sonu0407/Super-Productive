@@ -3,6 +3,9 @@ import RewardCard from "./RewardCard";
 import { IoReloadCircle } from "react-icons/io5";
 import toast from "react-hot-toast";
 
+//music imports
+import bonusRewardAudio from "../../public/sounds/Bonus reward sound.mp3";
+
 const FocusTimer = ({
   selectedSong,
   setSelectedSong,
@@ -32,11 +35,40 @@ const FocusTimer = ({
     "/sounds/Ocean waves noise.mp3",
   ];
   let audioRef = useRef(new Audio());
-  const cashRegisterSound = new Audio("/sounds/cash registered sound.mp3");
-  const deleteTaskSound = new Audio("/sounds/delete-task.wav");
+  const cashRegisterSound = useRef(
+    new Audio("/sounds/cash registered sound.mp3"),
+  );
+  const deleteTaskSound = useRef(new Audio("/sounds/delete-task.wav"));
   const [walletUpdated, setWalletUpdated] = useState(false);
-  let BonusRewardSound = new Audio("/sounds/Bonus reward sound.mp3");
+  let BonusRewardSound = useRef(null);
 
+  useEffect(() => {
+    BonusRewardSound.current = new Audio(bonusRewardAudio);
+
+    return () => {
+      if (BonusRewardSound.current) {
+        BonusRewardSound.current.pause();
+        BonusRewardSound.current = null;
+      }
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   //create the audio instance
+  //   BonusRewardSound.current = new Audio("/sounds/Bonus reward sound.mp3");
+
+  //   //Preload the enitre file for instant playback
+  //   BonusRewardSound.current.preload = "auto";
+
+  //   //Cleanup to prevent memory leaks when component unmounts
+  //   return () => {
+  //     if (BonusRewardSound.current) {
+  //       BonusRewardSound.current.pause();
+  //       BonusRewardSound.current = null;
+  //     }
+  //   };
+  // }, []);
+  // new Audio("/sounds/Bonus reward sound.mp3");
   useEffect(() => {
     if (selectedSong === null || selectedSong === undefined) {
       return;
@@ -171,7 +203,7 @@ const FocusTimer = ({
           }
           return prev - 1;
         });
-      }, 1000);
+      }, 100);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -259,9 +291,9 @@ const FocusTimer = ({
           } else {
             await reloadwalletBalance();
             console.log("I am at updateWalletBalanceWithBonus");
-            deleteTaskSound.pause();
-            cashRegisterSound.pause();
-            BonusRewardSound.play();
+            deleteTaskSound.current.pause();
+            cashRegisterSound.current.pause();
+            BonusRewardSound.current.play();
           }
 
           console.log(data.message);
@@ -309,11 +341,11 @@ const FocusTimer = ({
           } else {
             await reloadwalletBalance();
             if (bonus) {
-              BonusRewardSound.play();
+              BonusRewardSound.current.play();
             } else {
               console.log("Play");
               console.log(loadingBonus);
-              cashRegisterSound.play();
+              cashRegisterSound.current.play();
             }
           }
 
@@ -408,9 +440,9 @@ const FocusTimer = ({
           setTimeLeft(0);
           setTaskDeleted(true);
           if (loadingBonus) {
-            deleteTaskSound.pause();
+            deleteTaskSound.current.pause();
           } else {
-            deleteTaskSound.play();
+            deleteTaskSound.current.play();
           }
         } catch (error) {
           console.log("Error in deleteTask", error);
