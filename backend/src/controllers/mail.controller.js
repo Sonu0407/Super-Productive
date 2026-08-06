@@ -16,6 +16,7 @@ export const sendMail = async (req, res) => {
       from: `"Super Productive" <${process.env.USER}>`,
       to,
       subject: "🎉 Your Reward is Ready!",
+      text: "Hello. This email is for your email verification.",
       html: `
             <!DOCTYPE html>
             <html>

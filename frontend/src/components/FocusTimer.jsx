@@ -26,6 +26,29 @@ const FocusTimer = ({
   const [selectedTask, setSelectedTask] = useState(null);
   const defaultAudio = useRef(new Audio("/sounds/Brown-noise.mp3"));
   const [isItPlaying, setIsItPlaying] = useState(false);
+  const [completedTaskCountForStreak, setCompletedTaskCountForStreak] =
+    useState(() => {
+      const today = new Date().toDateString();
+      const storedDate = localStorage.getItem("earningsDate");
+      const storedValue = localStorage.getItem("todayCompletedTasksForStreak");
+
+      if (storedDate === today) {
+        return storedValue ? Number(storedValue) : 0;
+      }
+
+      // New Day reset
+      localStorage.setItem("todayCompletedTasksForStreak", 0);
+
+      return 0;
+    });
+
+  useEffect(() => {
+    localStorage.setItem(
+      "todayCompletedTasksForStreak",
+      completedTaskCountForStreak,
+    );
+  }, [completedTaskCountForStreak]);
+
   const songsArray = [
     "/sounds/Brown-noise.mp3",
     "/sounds/Low-pink-noise.mp3",
@@ -203,7 +226,7 @@ const FocusTimer = ({
           }
           return prev - 1;
         });
-      }, 100);
+      }, 1000);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -340,13 +363,14 @@ const FocusTimer = ({
             );
           } else {
             await reloadwalletBalance();
-            if (bonus) {
-              BonusRewardSound.current.play();
-            } else {
-              console.log("Play");
-              console.log(loadingBonus);
-              cashRegisterSound.current.play();
-            }
+            cashRegisterSound.current.play();
+            // if (bonus) {
+            //   BonusRewardSound.current.play();
+            // } else {
+            //   console.log("Play");
+            //   console.log(loadingBonus);
+            //   cashRegisterSound.current.play();
+            // }
           }
 
           console.log(data.message);
@@ -386,7 +410,8 @@ const FocusTimer = ({
       if (!response.ok) {
         throw new Error(data.error || data.message);
       } else {
-        setCompletedTaskCount((prev) => (prev !== 7 ? prev + 1 : 7));
+        setCompletedTaskCount((prev) => prev + 1);
+        setCompletedTaskCountForStreak((prev) => (prev !== 7 ? prev + 1 : 7));
       }
 
       return data;
@@ -478,7 +503,7 @@ const FocusTimer = ({
           </span>
 
           <div className="flex gap-1.5">
-            {Array.from({ length: completedTaskCount }).map(
+            {Array.from({ length: completedTaskCountForStreak }).map(
               (_, index) => (
                 console.log(completedTaskCount),
                 (
@@ -489,14 +514,14 @@ const FocusTimer = ({
                 )
               ),
             )}
-            {Array.from({ length: blackStreaks - completedTaskCount }).map(
-              (_, index) => (
-                <span
-                  key={index}
-                  className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
-                ></span>
-              ),
-            )}
+            {Array.from({
+              length: blackStreaks - completedTaskCountForStreak,
+            }).map((_, index) => (
+              <span
+                key={index}
+                className="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-[#1f1f1f]"
+              ></span>
+            ))}
           </div>
         </div>
       </div>
