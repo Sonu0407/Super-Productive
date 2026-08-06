@@ -12,6 +12,7 @@ const RedeemModal = ({
   const { authUser } = useContext(AuthContext);
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [onChanged, setOnChanged] = useState(false);
 
   const [walletBalance, setWalletBalance] = useState(null);
 
@@ -51,7 +52,7 @@ const RedeemModal = ({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: newEmail,
+          to: newEmail ? newEmail : authUser.email,
           name: username,
           reward: selectedReward.subtitle,
           rewardProvider: selectedReward.title,
@@ -97,6 +98,8 @@ const RedeemModal = ({
       updateWalletBalanceDecrease();
     }
   };
+
+  console.log(newEmail);
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center px-4">
@@ -181,9 +184,10 @@ const RedeemModal = ({
 
             <input
               type="text"
-              value={newEmail} // else use authUser.email for fixed email
+              value={onChanged ? newEmail : authUser.email} // else use authUser.email for fixed email
               onChange={(e) => {
                 setNewEmail(e.target.value);
+                setOnChanged(true);
               }}
               className="
                 w-full
