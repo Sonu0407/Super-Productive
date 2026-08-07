@@ -20,15 +20,15 @@ const gamingRewards = [
     icon: <FaSteam />,
     color: "bg-slate-800",
     title: "Steam Wallet",
-    subtitle: "$5 game credit",
-    price: 100.0,
+    subtitle: "₹250 game credit",
+    price: 450.0,
     code: 1,
   },
   {
-    icon: <FaPlaystation />,
+    icon: <FaPlaystation />, // not available
     color: "bg-blue-700",
     title: "PlayStation Store",
-    subtitle: "$5 store credit",
+    subtitle: "₹250 store credit",
     price: 160.0,
     code: 2,
   },
@@ -47,8 +47,8 @@ const shoppingRewards = [
     icon: <AiFillAmazonCircle />,
     color: "bg-orange-500",
     title: "Amazon",
-    subtitle: "$5 gift card",
-    price: 150.0,
+    subtitle: "₹100 gift card",
+    price: 200.0,
     code: 4,
   },
   {
@@ -70,22 +70,6 @@ const shoppingRewards = [
 ];
 
 const entertainmentRewards = [
-  {
-    icon: <FaSpotify />,
-    color: "bg-green-500",
-    title: "Spotify Premium",
-    subtitle: "1 month credit",
-    price: 65.5,
-    code: 7,
-  },
-  {
-    icon: <RiNetflixFill />,
-    color: "bg-red-600",
-    title: "Netflix",
-    subtitle: "$5 gift card",
-    price: 500.0,
-    code: 8,
-  },
   {
     icon: <FaDiscord />,
     color: "bg-indigo-400",
