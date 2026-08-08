@@ -67,9 +67,6 @@ const TaskModal = ({ task, onClose, onReloadTasks }) => {
 
   const handleDelete = async () => {
     console.log(task.id);
-
-    // TODO:
-    // DELETE /api/tasks/:id
     try {
       const url = `http://localhost:8000/api/tasks/${task.id}`;
       const response = await fetch(url, {
@@ -150,7 +147,6 @@ const TaskModal = ({ task, onClose, onReloadTasks }) => {
             <input
               type="number"
               value={rewards}
-              //   onChange={(e) => setReward(e.target.value)}
               placeholder="$1.50"
               className="
                 w-full

@@ -83,8 +83,6 @@ const Home = () => {
     getAllTasks();
   }, []);
 
-  // add music folder and commit changes
-
   const getAllTasks = async () => {
     try {
       const url = "http://localhost:8000/api/tasks/";
@@ -95,21 +93,17 @@ const Home = () => {
 
       const data = await response.json();
 
-      // console.log("response", response);
-
       if (!response.ok) {
         throw new Error(data.error || data.message || "Something went wrong");
       }
 
       setGetAllTask(data.tasks);
-      // console.log(getAllTask);
       console.log(Array.isArray(data));
       console.log(data.tasks);
     } catch (error) {
       console.log("Error in getAllTasks:", error);
     }
   };
-  // create custom hook for rewards
   console.log("Wallet Balance:", walletBalance);
 
   return (

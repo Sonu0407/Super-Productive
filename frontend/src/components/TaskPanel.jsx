@@ -16,7 +16,7 @@ const TasksPanel = ({
 }) => {
   const [task, setTask] = useState("");
   const [reward, setReward] = useState(""); // no use no where used
-  const [getAllTask, setGetAllTask] = useState([]); // 1
+  const [getAllTask, setGetAllTask] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const addTaskSound = new Audio("/sounds/add-task.wav");
   useEffect(() => {
@@ -68,14 +68,11 @@ const TasksPanel = ({
 
       const data = await response.json();
 
-      // console.log("response", response);
-
       if (!response.ok) {
         throw new Error(data.error || data.message || "Something went wrong");
       }
 
       setGetAllTask(data.tasks);
-      // console.log(getAllTask);
       console.log(Array.isArray(data));
       console.log(data.tasks);
     } catch (error) {
@@ -107,7 +104,6 @@ const TasksPanel = ({
 
       console.log(data);
       console.log(Array.isArray(data));
-      // setTask(data);
       toast.success("Task added successfully");
       addTaskSound.play();
       setTask("");
@@ -178,19 +174,6 @@ const TasksPanel = ({
           </button>
         </div>
 
-        {/* Completed */}
-        {/* <h3 className="text-lg font-semibold text-gray-400 dark:text-[#9d9d9d] mt-3 mb-3">
-          COMPLETED
-        </h3>
-
-        <div className="space-y-3">
-          <TaskCompletedCard title="Write project proposal" reward="$1.50" />
-
-          <TaskCompletedCard title="Review team pull requests" reward="$1.50" />
-
-          <TaskCompletedCard title="Meditate for 10 min" reward="$1.50" />
-        </div> */}
-
         {/* Remaining */}
         <h3 className="text-lg font-semibold text-gray-400 dark:text-[#9d9d9d] mt-3 mb-6">
           REMAINING
@@ -209,10 +192,6 @@ const TasksPanel = ({
               />
             );
           })}
-
-          {/* <TaskCard title="Review team pull requests" reward="$1.00" />
-
-          <TaskCard title="Meditate for 10 min" reward="$0.50" /> */}
         </div>
 
         {/* Footer */}

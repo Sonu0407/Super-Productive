@@ -19,8 +19,6 @@ function App() {
     return <h1>Loading...</h1>;
   }
 
-  // console.log(authUser);
-
   if (isDarkMode) {
     document.documentElement.classList.add("dark");
   }

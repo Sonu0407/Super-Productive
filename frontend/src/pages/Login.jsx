@@ -175,51 +175,6 @@ const Login = () => {
           >
             {loading ? "Loading..." : "Login"}
           </button>
-
-          {/* {/* Divider
-          <div className="flex items-center my-3">
-            <div className="flex-1 border-t dark:border-[#575757]"></div>
-
-            <span className="px-4 text-gray-500 dark:text-gray-400 text-sm">
-              or continue with
-            </span>
-
-            <div className="flex-1 border-t dark:border-[#575757]"></div>
-          </div> */}
-
-          {/* Social
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              className="
-                border rounded-xl py-3 font-semibold
-                flex items-center justify-center gap-2
-                hover:bg-gray-50 transition
-
-                dark:border-[#575757]
-                dark:text-white
-                dark:hover:bg-[#3a3a38]
-              "
-            >
-              <FcGoogle size={20} />
-              Google
-            </button>
-
-            <button
-              className="
-                border rounded-xl py-3 font-semibold
-                flex items-center justify-center gap-2
-                hover:bg-gray-50 transition
-
-                dark:border-[#575757]
-                dark:text-white
-                dark:hover:bg-[#3a3a38]
-              "
-            >
-              <Apple size={20} />
-              Apple
-            </button>
-          </div> */}
-
           {/* Footer */}
           <p className="text-center mt-3 text-sm text-gray-600 dark:text-gray-300">
             Don't have an account?{" "}

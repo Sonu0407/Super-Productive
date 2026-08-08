@@ -37,7 +37,6 @@ const Register = () => {
       agreement,
     });
 
-    // Handle registration logic here
     try {
       setLoading(true);
       const url = "http://localhost:8000/api/auth/register";
