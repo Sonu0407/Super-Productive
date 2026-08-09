@@ -87,7 +87,7 @@ const RedeemModal = ({
           const data = await response.json();
           if (response.ok) {
             onClose();
-            await reloadWalletBalance(); //prop drilling happended here
+            await reloadWalletBalance();
             return toast.success("Wallet Updated Successfully!.");
           }
         } catch (error) {
@@ -156,7 +156,6 @@ const RedeemModal = ({
             <input
               type="text"
               value={reward.subtitle}
-              //   onChange={(e) => setTitle(e.target.value)}
               className="
                 w-full
                 rounded-xl
@@ -184,7 +183,7 @@ const RedeemModal = ({
 
             <input
               type="text"
-              value={onChanged ? newEmail : authUser.email} // else use authUser.email for fixed email
+              value={onChanged ? newEmail : authUser.email}
               onChange={(e) => {
                 setNewEmail(e.target.value);
                 setOnChanged(true);
@@ -204,7 +203,6 @@ const RedeemModal = ({
                 focus:ring-red-400
                 dark:text-white
               "
-              // readOnly
             />
           </div>
         </div>

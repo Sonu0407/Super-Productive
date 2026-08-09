@@ -3,8 +3,6 @@ import { X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const timerOptions = [15, 25, 45, 60];
-// const reward = timerOptions.map((option) => `$${option / 60}`);
-// console.log(reward);
 
 const TaskModal = ({ task, onClose, onReloadTasks }) => {
   const [title, setTitle] = useState("");
@@ -16,21 +14,11 @@ const TaskModal = ({ task, onClose, onReloadTasks }) => {
   useEffect(() => {
     if (task) {
       setTitle(task.title || "");
-      //   setReward(task.reward || "");
       setFocusSession(task.focus_session || 25);
     }
   }, [task]);
 
   const handleUpdate = async () => {
-    // console.log({
-    //   id: task.id,
-    //   title,
-    //   rewards,
-    //   timer,
-    // });
-
-    // TODO:
-    // PUT /api/tasks/:id
     try {
       const url = `http://localhost:8000/api/tasks/${task.id}`;
 

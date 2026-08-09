@@ -72,11 +72,6 @@ const RewardCard = ({
         onClick={() => {
           setIsOpen(!isOpen);
           setSelectedReward({ title, subtitle, price, code });
-          // console.log(
-          //   selectedReward.title,
-          //   selectedReward.subtitle,
-          //   selectedReward.price,
-          // );
         }}
         className={`
           w-full

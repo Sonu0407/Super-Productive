@@ -76,22 +76,6 @@ const FocusTimer = ({
     };
   }, []);
 
-  // useEffect(() => {
-  //   //create the audio instance
-  //   BonusRewardSound.current = new Audio("/sounds/Bonus reward sound.mp3");
-
-  //   //Preload the enitre file for instant playback
-  //   BonusRewardSound.current.preload = "auto";
-
-  //   //Cleanup to prevent memory leaks when component unmounts
-  //   return () => {
-  //     if (BonusRewardSound.current) {
-  //       BonusRewardSound.current.pause();
-  //       BonusRewardSound.current = null;
-  //     }
-  //   };
-  // }, []);
-  // new Audio("/sounds/Bonus reward sound.mp3");
   useEffect(() => {
     if (selectedSong === null || selectedSong === undefined) {
       return;
@@ -131,8 +115,6 @@ const FocusTimer = ({
 
       const data = await response.json();
 
-      // console.log("response", response);
-
       if (!response.ok) {
         throw new Error(data.error || data.message || "Something went wrong");
       }
@@ -142,7 +124,6 @@ const FocusTimer = ({
       console.log(rewardsTask);
 
       setGetAllTask(rewardsTask);
-      // console.log(getAllTask);
       console.log(Array.isArray(data));
       console.log(data.tasks);
     } catch (error) {
@@ -152,13 +133,8 @@ const FocusTimer = ({
 
   const handleReload = async () => {
     try {
-      // TODO: WHEN I CLICK ON RELOAD IT SHOULD RESET ALL VALUES EXSPECIALLY THE TIMER AND RING ONE
       setReloading(true);
       await getAllTasks();
-      // setSelectedTask("");
-      // setCurrentTask("");
-      // setFocusSession(null);
-      // setTimeLeft(null);
     } finally {
       setReloading(false);
     }
@@ -186,7 +162,6 @@ const FocusTimer = ({
 
       setCurrentTask(data.task);
       setFocusSession(data.task.focus_session);
-      // setSeconds(60);
       console.log(data.task);
     } catch (error) {
       console.log("Error in getCurrentTaskDetails:", error);
@@ -205,8 +180,8 @@ const FocusTimer = ({
 
   // function to format time
   function formatTime(seconds) {
-    const hrs = Math.floor(seconds / 3600); // 0 hrs
-    const mins = Math.floor((seconds % 3600) / 60); // we are getting correct answer here
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
     const sec = seconds % 60;
 
     // return in the format
@@ -246,7 +221,6 @@ const FocusTimer = ({
   useEffect(() => {
     setTotalProgress(Math.floor(circumference * progress));
   }, [circumference, progress]);
-  // Math.floor(circumference * progress)
 
   console.log(circumference);
   console.log(totalProgress);
@@ -279,7 +253,6 @@ const FocusTimer = ({
 
   console.log("Time Left:", timeLeft);
 
-  // boolean value for the status of Bonus reward
   const [loadingBonus, setLoadingBonus] = useState(false);
 
   useEffect(() => {
@@ -287,12 +260,10 @@ const FocusTimer = ({
     const bonus =
       completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false; // for bonus reward
     if (bonus) {
-      // update the wallet with $0.50
       const updateWalletBalanceWithBonus = async () => {
         try {
           setLoadingBonus(true);
           console.log(loadingBonus);
-          // setWalletUpdated(false);
           const url = "http://localhost:8000/api/auth/update/wallet";
           const response = await fetch(url ? url : undefined, {
             method: "POST",
@@ -322,9 +293,6 @@ const FocusTimer = ({
           console.log(data.message);
         } catch (error) {
           console.log("Error in updateWalletBalanceWithBonus", error);
-        } finally {
-          // setWalletUpdated(true);
-          // setLoadingBonus(false);
         }
       };
       updateWalletBalanceWithBonus();
@@ -336,10 +304,7 @@ const FocusTimer = ({
     if (timeLeft === 0 && selectedTask !== null) {
       const bonus =
         completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false;
-      // update the wallet balance with CURRENT TASK REWARD
       console.log("Come here!");
-      // update wallet when streaks are > 3
-      // if (completedTaskCount % 3 === 0)
       const updateWalletBalance = async () => {
         try {
           setWalletUpdated(false);
@@ -364,13 +329,6 @@ const FocusTimer = ({
           } else {
             await reloadwalletBalance();
             cashRegisterSound.current.play();
-            // if (bonus) {
-            //   BonusRewardSound.current.play();
-            // } else {
-            //   console.log("Play");
-            //   console.log(loadingBonus);
-            //   cashRegisterSound.current.play();
-            // }
           }
 
           console.log(data.message);
@@ -381,13 +339,10 @@ const FocusTimer = ({
         }
       };
       updateWalletBalance();
-
-      // reloadwalletBalance();
     }
     console.log("Came here");
   }, [timeLeft]);
 
-  // console.log(currentTask.id); // it is giving the correct output
   const updateToCompleted = async (task) => {
     console.log(task);
     try {
@@ -426,10 +381,7 @@ const FocusTimer = ({
       const deleteTask = async (currentTask) => {
         try {
           await updateToCompleted(currentTask);
-          // TODO: AFTER Focus timer is over and task gets delete then nothing task is getting and timer also is not updating check why? TMR
-          // await new Promise((resolve) => setTimeout(resolve, 700));
           const taskToDelete = currentTask;
-          // console.log(currentTask);
           const url = `http://localhost:8000/api/tasks/${taskToDelete.id}`;
 
           const response = await fetch(url ? url : undefined, {
@@ -448,15 +400,7 @@ const FocusTimer = ({
           const freshTasks = getAllTask.filter(
             (task) => task.id !== taskToDelete.id,
           );
-
-          // console.log(freshTasks);
-
-          // Remove immediately from UI
           setGetAllTask(freshTasks);
-
-          // console.log(getAllTask);
-          // console.log(task.rewards);
-
           toast.success("Task deleted successfully");
           setTotalReward((prev) => prev + Number(taskToDelete.rewards || 0));
           setSelectedTask("");
@@ -472,16 +416,12 @@ const FocusTimer = ({
         } catch (error) {
           console.log("Error in deleteTask", error);
           toast.error(error.message);
-        } finally {
-          // loadingBonus = false;
         }
       };
       deleteTask(currentTask);
     }
     setLoadingBonus(false);
   }, [walletUpdated]);
-
-  // setLoadingBonus(false);
 
   console.log(strokeDashoffset);
   console.log(getAllTask);
@@ -532,7 +472,6 @@ const FocusTimer = ({
         <div className="flex items-center justify-between gap-1">
           <select
             value={selectedTask || ""}
-            // onClick={getCurrentTaskDetails}
             onChange={(e) => {
               setSelectedTask(e.target.value);
               setIsRunning(false);
@@ -560,11 +499,7 @@ const FocusTimer = ({
               Select task to focus on
             </option>
             {getAllTask.map((task) => (
-              <option
-                // onClick={getCurrentTaskDetails}
-                key={task.id}
-                value={task.id}
-              >
+              <option key={task.id} value={task.id}>
                 {task.title}
               </option>
             ))}
@@ -609,8 +544,6 @@ const FocusTimer = ({
 
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <h1 className="text-4xl lg:text-5xl font-bold dark:text-[#f5f5f5]">
-                {/* {focusSession < 10 ? `0${focusSession}` : focusSession}:
-                {seconds < 10 ? `0${seconds}` : seconds} */}
                 {formatTime(timeLeft)}
               </h1>
 
@@ -623,11 +556,6 @@ const FocusTimer = ({
 
         {/* Controls */}
         <div className="flex items-center justify-center gap-3 mt-3">
-          {/* <button className="border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition">
-            15 min
-          </button> */}
-          {/* not required now change later */}
-
           <button
             disabled={!timeLeft}
             onClick={() => {
@@ -636,11 +564,9 @@ const FocusTimer = ({
               if (selectedSong) {
                 defaultAudio.current.pause();
                 audioRef.current.play();
-                // audioRef.current.volume = volume / 100;
               } else {
                 audioRef.current.pause();
                 defaultAudio.current.play();
-                // defaultAudio.current.volume = volume / 100;
               }
             }}
             className="max-w-[300px] w-full border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition"
@@ -662,11 +588,6 @@ const FocusTimer = ({
           >
             Stop
           </button>
-
-          {/* <button className="border border-gray-200 dark:border-[#5a5a5a] dark:text-[#f2f2f2] rounded-xl py-3 text-base font-medium hover:bg-gray-50 dark:hover:bg-[#383838] transition">
-            Reset
-          </button> */}
-          {/* not required now change later */}
         </div>
 
         {/* Reward Card */}

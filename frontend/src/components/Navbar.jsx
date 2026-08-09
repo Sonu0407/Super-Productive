@@ -68,7 +68,6 @@ const Navbar = ({ walletBalance }) => {
           Rewards
         </Link>
 
-        {/* <img src={user} alt="User" className="h-5 w-5" /> */}
         <button className="text-gray-500 dark:text-[#c8c8c8] flex gap-4 justify-center items-center">
           <img src={user} alt="User" className="h-12 w-12" />
           {authUser.firstname + " " + authUser.lastname}

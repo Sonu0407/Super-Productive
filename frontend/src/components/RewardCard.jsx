@@ -71,5 +71,5 @@ const RewardCard = ({ task }) => {
     </div>
   );
 };
-// TODO : Add wallet balance in backend for new users
+
 export default RewardCard;
