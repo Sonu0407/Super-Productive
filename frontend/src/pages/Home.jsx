@@ -143,7 +143,6 @@ const Home = () => {
       </div>
 
       {/* Sounds Content */}
-
       <MusicCard
         setSelectedSong={setSelectedSong}
         volume={volume}

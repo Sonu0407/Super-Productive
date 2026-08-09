@@ -25,7 +25,6 @@ function App() {
 
   return (
     <>
-      {/* Tailwind css is working */}
       <Routes>
         <Route path="/" element={authUser ? <Home /> : <Login />} />
         <Route path="/login" element={authUser ? <Home /> : <Login />} />

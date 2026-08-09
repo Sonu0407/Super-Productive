@@ -41,7 +41,6 @@ const TasksPanel = ({
         throw new Error(data.error || data.message);
       }
 
-      // Remove immediately from UI
       console.log(getAllTask);
 
       setGetAllTask((prev) => prev.filter((tasks) => tasks.id !== task.id));
@@ -52,7 +51,6 @@ const TasksPanel = ({
       toast.success("Task deleted successfully");
       setTotalReward((prev) => prev + Number(task.rewards || 0));
       localStorage.setItem("todayEarnings", totalReward);
-      // deleteTaskSound.play();
     } catch (error) {
       toast.error(error.message);
     }

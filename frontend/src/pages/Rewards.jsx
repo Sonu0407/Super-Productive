@@ -25,7 +25,7 @@ const gamingRewards = [
     code: 1,
   },
   {
-    icon: <FaPlaystation />, // not available
+    icon: <FaPlaystation />,
     color: "bg-blue-700",
     title: "PlayStation Store",
     subtitle: "₹250 store credit",
