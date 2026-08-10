@@ -3,7 +3,6 @@ import { data } from "react-router-dom";
 
 const TaskHeader = ({ totalNumberOfTasks, numberOfCompletedTasks }) => {
   const date = new Date();
-  let tasks = totalNumberOfTasks;
 
   return (
     <div className="flex items-center justify-between px-4 lg:px-5 py-3 border-b border-gray-200 dark:border-[#4a4a4a]">
@@ -12,7 +11,7 @@ const TaskHeader = ({ totalNumberOfTasks, numberOfCompletedTasks }) => {
       </h2>
 
       <span className="text-base lg:text-lg text-gray-400 dark:text-[#b0b0b0] font-medium">
-        {numberOfCompletedTasks} of {tasks} done
+        {numberOfCompletedTasks} of {totalNumberOfTasks} done
       </span>
     </div>
   );

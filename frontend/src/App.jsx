@@ -9,7 +9,6 @@ import Register from "./pages/Register";
 import Rewards from "./pages/Rewards";
 
 import AuthContext from "./context/AuthContext";
-import TaskDetails from "./pages/TaskDetails";
 
 function App() {
   const { authUser, loading } = useContext(AuthContext);
@@ -30,10 +29,6 @@ function App() {
         <Route path="/login" element={authUser ? <Home /> : <Login />} />
         <Route path="/register" element={authUser ? <Home /> : <Register />} />
         <Route path="/rewards" element={authUser ? <Rewards /> : <Login />} />
-        <Route
-          path="/task/:id"
-          element={authUser ? <TaskDetails /> : <Login />}
-        />
       </Routes>
     </>
   );

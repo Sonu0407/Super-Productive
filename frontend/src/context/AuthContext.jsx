@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
+      setLoading(true);
       const url = "http://localhost:8000/api/auth/me";
       const response = await fetch(url, {
         method: "GET",

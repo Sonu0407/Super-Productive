@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 const TaskFooter = ({ tasks, CompletedTasksRewards }) => {
   let totalRewards = 0;
 
-  console.log(CompletedTasksRewards);
-
   for (let i = 0; i < tasks.length; i++) {
     if (tasks[i].rewards) {
       totalRewards += tasks[i].rewards ? tasks[i].rewards : 0;

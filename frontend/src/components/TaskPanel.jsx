@@ -15,7 +15,6 @@ const TasksPanel = ({
   completedTaskCount,
 }) => {
   const [task, setTask] = useState("");
-  const [reward, setReward] = useState(""); // no use no where used
   const [getAllTask, setGetAllTask] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
   const addTaskSound = new Audio("/sounds/add-task.wav");

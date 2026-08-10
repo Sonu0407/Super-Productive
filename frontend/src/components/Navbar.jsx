@@ -6,9 +6,7 @@ import user from "../../public/images/user.png";
 
 const Navbar = ({ walletBalance }) => {
   const navigate = useNavigate();
-  const { checkAuth } = useContext(AuthContext);
-  const { authUser } = useContext(AuthContext);
-
+  const { checkAuth, authUser } = useContext(AuthContext);
   const [animateReward, setAnimateReward] = useState(false);
   const [rewardIncrease, setRewardIncrease] = useState(null);
   const prevBalance = useRef(walletBalance || 0);

@@ -122,7 +122,6 @@ const FocusTimer = ({
       const rewardsTask = data.tasks.filter((task) => task.rewards !== null);
 
       console.log(rewardsTask);
-
       setGetAllTask(rewardsTask);
       console.log(Array.isArray(data));
       console.log(data.tasks);
@@ -201,7 +200,7 @@ const FocusTimer = ({
           }
           return prev - 1;
         });
-      }, 1000);
+      }, 100);
     } else {
       clearInterval(intervalRef.current);
     }
@@ -258,7 +257,7 @@ const FocusTimer = ({
   useEffect(() => {
     console.log("Come here!");
     const bonus =
-      completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false; // for bonus reward
+      completedTaskCount > 0 && completedTaskCount % 3 === 0 ? true : false;
     if (bonus) {
       const updateWalletBalanceWithBonus = async () => {
         try {
