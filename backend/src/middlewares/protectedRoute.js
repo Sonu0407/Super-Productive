@@ -1,14 +1,15 @@
 import jwt from "jsonwebtoken";
 
 const protectedRoute = (req, res, next) => {
-  const token = req.cookies.jwt; // to access the cookie you need to install cookie-parser
-  //   console.log(token);
-
+  const authHeader = req.headers["authorization"];
+  console.log(authHeader);
+  const token = authHeader && authHeader.split(" ")[1];
+  console.log(token);
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_SECRET);
     req.userId = decoded.userId;
     next();
   } catch (error) {
@@ -16,7 +17,6 @@ const protectedRoute = (req, res, next) => {
     res.status(401).json({ message: "Unauthorized" });
   }
 
-  //   console.log(req.userId);
   return req.userId;
 };
 

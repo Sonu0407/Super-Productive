@@ -1,6 +1,9 @@
 import db from "../database/db.js";
 import bcrypt from "bcryptjs";
-import generateToken from "../utils/generateToken.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../utils/generateToken.js";
 
 export const getMe = async (req, res) => {
   try {
@@ -120,8 +123,9 @@ export const loginUser = async (req, res) => {
         ...userWithoutPassword
       } = user;
 
-      // generate token
-      const token = generateToken(user.id, res);
+      // generate AccessToken and RefreshToken
+      const accessToken = generateAccessToken(user.id, res);
+      const refreshToken = generateRefreshToken(user.id, res);
 
       res
         .status(200)
@@ -138,7 +142,7 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
-    res.clearCookie("jwt");
+    res.clearCookie("refreshToken");
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error("Error in logoutUser:", error);

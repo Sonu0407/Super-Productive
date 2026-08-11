@@ -9,6 +9,7 @@ import userRouter from "./routes/userRoutes.js";
 import taskRouter from "./routes/taskRoutes.js";
 import TimerRouter from "./routes/timerRoutes.js";
 import mailRouter from "./routes/mailRoutes.js";
+import generateRefresh from "./routes/refreshRoutes.js";
 import db from "./database/db.js";
 
 const app = express();
@@ -29,6 +30,8 @@ app.use("/api/tasks", taskRouter);
 app.use("/api/setTimer", TimerRouter);
 // send mail
 app.use("/api/sendMail", mailRouter);
+// generate refreshToken
+app.use("/api/refresh", generateRefresh);
 
 db.connect()
   .then(() => {
