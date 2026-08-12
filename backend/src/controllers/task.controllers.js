@@ -8,14 +8,14 @@ export const getAllTasks = async (req, res) => {
       const query = "SELECT * FROM tasks WHERE user_id = $1 ORDER BY id DESC";
       const values = [userId];
       const result = await db.query(query, values);
-      res.status(200).json({ tasks: result.rows });
+      return res.status(200).json({ tasks: result.rows });
     } catch (error) {
       console.error("Database error in getAllTasks:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in getAllTasks:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -34,11 +34,11 @@ export const getTaskById = async (req, res) => {
       res.status(200).json({ task: result.rows[0] });
     } catch (error) {
       console.error("Database error in getTaskById:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in getTaskById:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -64,16 +64,16 @@ export const createTask = async (req, res) => {
       ];
       const result = await db.query(query, values);
 
-      res
+      return res
         .status(201)
         .json({ message: "Task created successfully", task: result.rows[0] });
     } catch (error) {
       console.error("Database error in createTask:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in createTask:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 export const updateTask = async (req, res) => {
@@ -82,34 +82,6 @@ export const updateTask = async (req, res) => {
     const { id: taskId } = req.params;
     const { title, description, completed, rewards, focus_session } = req.body;
     const focus_seconds = focus_session * 60;
-
-    // if (focus_session) {
-    //   const timeToFocus = () => {
-    //     return new Promise((resolve) => {
-    //       setTimeout(() => {
-    //         const reward = (focus_session / 60).toFixed(2);
-    //         resolve(reward);
-    //       }, focus_seconds * 1000); // convert seconds to milliseconds
-    //     });
-    //   };
-
-    //   const reward = await timeToFocus();
-
-    //   console.log(reward);
-
-    //   const query =
-    //     "UPDATE tasks SET rewards = $1 WHERE id = $2 AND user_id = $3 RETURNING *";
-    //   const values = [reward, taskId, userId];
-    //   const result = await db.query(query, values);
-    //   console.log(result.rows[0]);
-    //   return res.status(200).json({
-    //     message: "Task updated successfully1",
-    //     task: result.rows[0],
-    //   });
-    //   console.log("Come Here!");
-    // } else {
-    //   console.log(title);
-    //   console.log(description);
 
     if (!title) {
       return res.status(400).json({ message: "Please fill all the fields" });
@@ -130,17 +102,17 @@ export const updateTask = async (req, res) => {
       const result = await db.query(query, values);
 
       if (result.rowCount === 0) {
-        res.status(404).json({ message: "Task not found" });
+        return res.status(404).json({ message: "Task not found" });
       } else {
-        res.status(200).json({ message: "Task updated successfully2" });
+        return res.status(200).json({ message: "Task updated successfully2" });
       }
     } catch (error) {
       console.error("Database error in updateTask:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in updateTask:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 export const deleteTask = async (req, res) => {
@@ -154,17 +126,17 @@ export const deleteTask = async (req, res) => {
       const result = await db.query(query, values);
 
       if (result.rowCount === 0) {
-        res.status(404).json({ message: "Task not found" });
+        return res.status(404).json({ message: "Task not found" });
       } else {
-        res.status(200).json({ message: "Task deleted successfully" });
+        return res.status(200).json({ message: "Task deleted successfully" });
       }
     } catch (error) {
       console.error("Database error in deleteTask:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in deleteTask:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

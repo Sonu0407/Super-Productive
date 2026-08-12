@@ -141,9 +141,9 @@ export const sendMail = async (req, res) => {
             `,
     };
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "Email sent successfully" });
+    return res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
     console.error("Error in sendMail:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -11,15 +11,14 @@ export const getMe = async (req, res) => {
       "SELECT id, firstname, lastname, email FROM users WHERE id = $1",
       [req.userId],
     );
-    res.status(200).json(result.rows[0]);
+    return res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error("Error in getMe:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const registerUser = async (req, res) => {
-  // let take the date from the body
   try {
     const { firstname, lastname, email, password, confirm_password } = req.body;
 
@@ -27,7 +26,6 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
 
-    // check if user already exists
     try {
       const query = "SELECT * FROM users WHERE email = $1";
       const values = [email];
@@ -37,7 +35,7 @@ export const registerUser = async (req, res) => {
       }
     } catch (error) {
       console.error("Database error in registerUser:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
 
     // email verification
@@ -70,8 +68,6 @@ export const registerUser = async (req, res) => {
       saltRounds,
     );
 
-    // TODO : modify the navbar tomorrow
-
     try {
       const walletBalance = 2.0; // Initialize wallet balance for new users
       const query =
@@ -85,17 +81,17 @@ export const registerUser = async (req, res) => {
         walletBalance,
       ];
       const result = await db.query(query, values);
-      res.status(201).json({
+      return res.status(201).json({
         message: "User registered successfully",
         user: result.rows[0],
       });
     } catch (error) {
       console.error("Database error in registerUser:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in registerUser:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -127,26 +123,26 @@ export const loginUser = async (req, res) => {
       const accessToken = generateAccessToken(user.id, res);
       const refreshToken = generateRefreshToken(user.id, res);
 
-      res
+      return res
         .status(200)
         .json({ message: "Login successful", user: userWithoutPassword });
     } catch (error) {
       console.error("Error in loginUser:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in loginUser:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const logoutUser = async (req, res) => {
   try {
     res.clearCookie("refreshToken");
-    res.status(200).json({ message: "Logout successful" });
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error("Error in logoutUser:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -158,15 +154,16 @@ export const getWalletBalance = async (req, res) => {
       const query = "SELECT wallet_balance FROM users WHERE id = $1";
       const values = [userId];
       const result = await db.query(query, values);
-      // console.log(result.rows[0].wallet_balance);
-      res.status(200).json({ wallet_balance: result.rows[0].wallet_balance });
+      return res
+        .status(200)
+        .json({ wallet_balance: result.rows[0].wallet_balance });
     } catch (error) {
       console.error("Database error in getWalletBalance:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in getWalletBalance:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -174,7 +171,6 @@ export const updateUserWallet = async (req, res) => {
   try {
     const userId = req.userId;
 
-    // 1. Validate input first — no point hitting the DB otherwise
     if (
       !req.body ||
       req.body.wallet_balance === undefined ||
@@ -193,7 +189,6 @@ export const updateUserWallet = async (req, res) => {
         .json({ message: "wallet_balance must be a valid positive number" });
     }
 
-    // 2. Fetch current balance
     const selectQuery = "SELECT wallet_balance FROM users WHERE id = $1";
     const selectResult = await db.query(selectQuery, [userId]);
 
@@ -201,12 +196,10 @@ export const updateUserWallet = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // pg returns NUMERIC/DECIMAL as strings — must parse before doing math
     const prevWalletBalance =
       parseFloat(selectResult.rows[0].wallet_balance) || 0;
     const newWalletBalance = prevWalletBalance + amountToAdd;
 
-    // 3. Update with the new total
     const updateQuery = "UPDATE users SET wallet_balance = $1 WHERE id = $2";
     const updateResult = await db.query(updateQuery, [
       newWalletBalance,

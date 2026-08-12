@@ -23,7 +23,7 @@ export const setTimer = async (req, res) => {
       }
     } catch (error) {
       console.error("Database error in setTimer:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
 
     try {
@@ -32,13 +32,13 @@ export const setTimer = async (req, res) => {
       const values = [taskId, focus_minutes, reward];
       const result = await db.query(query, values);
       const timer = result.rows[0];
-      res.status(200).json({ message: "Timer set successfully", timer });
+      return res.status(200).json({ message: "Timer set successfully", timer });
     } catch (error) {
       console.error("Database error in setTimer:", error);
-      res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "Internal server error" });
     }
   } catch (error) {
     console.error("Error in setTimer:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
