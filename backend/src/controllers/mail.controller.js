@@ -2,7 +2,6 @@ import transporter from "../config/nodeMailer.js";
 import generateMongoDBId from "../utils/generateMongoDBId.js";
 import { generatePin } from "../utils/generatePin.js";
 
-const orderId = "123456";
 const date = new Date();
 date.setFullYear(date.getFullYear() + 1);
 
