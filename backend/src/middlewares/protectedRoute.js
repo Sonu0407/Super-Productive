@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 
 const protectedRoute = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  console.log(authHeader);
-  const token = authHeader && authHeader.split(" ")[1];
+  // const authHeader = req.headers["authorization"];
+  // console.log(authHeader);
+  const token = req.cookies.accessToken;
   console.log(token);
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -16,8 +16,6 @@ const protectedRoute = (req, res, next) => {
     console.error("Error in protectedRoute:", error);
     res.status(401).json({ message: "Unauthorized" });
   }
-
-  return req.userId;
 };
 
 export default protectedRoute;

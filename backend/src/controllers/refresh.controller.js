@@ -1,13 +1,21 @@
 import jwt from "jsonwebtoken";
+import { generateAccessToken } from "../utils/generateToken.js";
 
-export const newRefreshToken = async (req, res) => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.status(401).json({ error: "No token provided" });
+export const newRefreshAccessToken = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token)
+      return res.status(401).json({ error: "No Refresh token found" });
 
-  jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: "Invalid token" });
+    const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
 
-    const newAccessToken = generateAcsessToken(user);
-    res.json({ accessToken: newAccessToken });
-  });
+    generateAccessToken(decoded.userId, res);
+
+    return res.status(200).json({
+      message: "Access token refreshed successfully",
+    });
+  } catch (error) {
+    console.error("Error in refreshAccessToken:", error);
+    return res.status(403).json({ error: "Invalid or expired refresh token" });
+  }
 };

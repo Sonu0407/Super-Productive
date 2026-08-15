@@ -7,9 +7,9 @@ import cors from "cors";
 
 import userRouter from "./routes/userRoutes.js";
 import taskRouter from "./routes/taskRoutes.js";
-import TimerRouter from "./routes/timerRoutes.js";
+import timerRouter from "./routes/timerRoutes.js";
 import mailRouter from "./routes/mailRoutes.js";
-import generateRefresh from "./routes/refreshRoutes.js";
+import refreshAccessTokenRouter from "./routes/refreshRoutes.js";
 import db from "./database/db.js";
 
 const app = express();
@@ -27,11 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
 app.use("/api/tasks", taskRouter);
-app.use("/api/setTimer", TimerRouter);
+app.use("/api/setTimer", timerRouter);
 // send mail
 app.use("/api/sendMail", mailRouter);
 // generate refreshToken
-app.use("/api/refresh", generateRefresh);
+app.use("/api/refresh", refreshAccessTokenRouter);
 
 db.connect()
   .then(() => {
