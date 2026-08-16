@@ -13,7 +13,8 @@ import { SiZomato } from "react-icons/si";
 import { RiNetflixFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 
-const wallet = Number(localStorage.getItem("wallet_balance")); // localStorage always returns string, not a number
+const wallet = Number(localStorage.getItem("wallet_balance"));
+// localStorage always returns string, not a number
 
 const gamingRewards = [
   {
