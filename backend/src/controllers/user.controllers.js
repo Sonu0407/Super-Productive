@@ -4,6 +4,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateToken.js";
+import { uploadRefreshTokenToDatabase } from "../utils/uploadRefreshTokenToDatabase.js";
 
 export const getMe = async (req, res) => {
   try {
@@ -122,10 +123,18 @@ export const loginUser = async (req, res) => {
       // generate AccessToken and RefreshToken
       const accessToken = generateAccessToken(user.id, res);
       const refreshToken = generateRefreshToken(user.id, res);
+      const uploadedRefreshToken = await uploadRefreshTokenToDatabase(
+        user.id,
+        refreshToken,
+      );
 
       return res
         .status(200)
-        .json({ message: "Login successful", user: userWithoutPassword });
+        .json({
+          message: "Login successful",
+          user: userWithoutPassword,
+          refreshToken: uploadedRefreshToken,
+        });
     } catch (error) {
       console.error("Error in loginUser:", error);
       return res.status(500).json({ message: "Internal server error" });
