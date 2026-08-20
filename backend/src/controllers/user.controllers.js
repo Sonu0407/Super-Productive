@@ -70,7 +70,7 @@ export const registerUser = async (req, res) => {
     );
 
     try {
-      const walletBalance = 2.0; // Initialize wallet balance for new users
+      const walletBalance = 2.0;
       const query =
         "INSERT INTO users (firstname, lastname, email, password, confirm_password, wallet_balance) VALUES ($1, $2, $3, $4, $5, $6) RETURNING firstname, lastname, email, wallet_balance";
       const values = [
@@ -128,13 +128,11 @@ export const loginUser = async (req, res) => {
         refreshToken,
       );
 
-      return res
-        .status(200)
-        .json({
-          message: "Login successful",
-          user: userWithoutPassword,
-          refreshToken: uploadedRefreshToken,
-        });
+      return res.status(200).json({
+        message: "Login successful",
+        user: userWithoutPassword,
+        refreshToken: uploadedRefreshToken,
+      });
     } catch (error) {
       console.error("Error in loginUser:", error);
       return res.status(500).json({ message: "Internal server error" });
