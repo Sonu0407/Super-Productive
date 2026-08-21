@@ -5,23 +5,64 @@ import { toast } from "react-hot-toast";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [accessToken, setAccessToken] = useState(null);
   const [authUser, setAuthUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const refreshToken = async () => {
+      const refreshResponse = await fetch(
+        "http://localhost:8000/api/refresh/",
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
+
+      const refreshData = await refreshResponse.json();
+
+      if (!refreshResponse.ok) {
+        setAuthUser(null);
+        return;
+      }
+
+      const newAccessToken = refreshData.accessToken;
+      setAccessToken(newAccessToken);
+    };
+    refreshToken();
     checkAuth();
   }, []);
 
   const checkAuth = async () => {
     try {
       setLoading(true);
+
+      // const refreshResponse = await fetch(
+      //   "http://localhost:8000/api/refresh/",
+      //   {
+      //     method: "POST",
+      //     credentials: "include",
+      //   },
+      // );
+
+      // const refreshData = await refreshResponse.json();
+
+      // if (!refreshResponse.ok) {
+      //   setAuthUser(null);
+      //   return;
+      // }
+
+      // const newAccessToken = refreshData.accessToken;
+      // setAccessToken(newAccessToken);
+
       const url = "http://localhost:8000/api/auth/me";
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       const data = await response.json();
@@ -39,7 +80,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ authUser, setAuthUser, loading, checkAuth }}>
+    <AuthContext.Provider
+      value={{
+        accessToken,
+        setAccessToken,
+        authUser,
+        setAuthUser,
+        loading,
+        checkAuth,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

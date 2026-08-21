@@ -1,14 +1,8 @@
 import jwt from "jsonwebtoken";
 
-export const generateAccessToken = (userId, res) => {
+export const generateAccessToken = (userId) => {
   const accessToken = jwt.sign({ userId }, process.env.ACCESS_SECRET, {
     expiresIn: "15m",
-  });
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 15 * 60 * 1000,
   });
   return accessToken;
 };

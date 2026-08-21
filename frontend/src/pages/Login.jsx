@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { checkAuth } = useContext(AuthContext);
+  const { setAccessToken, checkAuth, setAuthUser } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -38,7 +38,9 @@ const Login = () => {
 
       console.log(data);
       toast.success("Login successful");
-      await checkAuth();
+      setAccessToken(data.accessToken);
+      setAuthUser(data.user);
+      // await checkAuth();
       navigate("/");
     } catch (error) {
       console.error("Error in handleLogin:", error);

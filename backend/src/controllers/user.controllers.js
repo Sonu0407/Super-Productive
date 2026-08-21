@@ -131,7 +131,7 @@ export const loginUser = async (req, res) => {
       return res.status(200).json({
         message: "Login successful",
         user: userWithoutPassword,
-        refreshToken: uploadedRefreshToken,
+        accessToken,
       });
     } catch (error) {
       console.error("Error in loginUser:", error);
