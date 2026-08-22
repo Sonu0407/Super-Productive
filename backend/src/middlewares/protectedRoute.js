@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 
 const protectedRoute = (req, res, next) => {
+  console.log("Headers:", req.headers);
   console.log("Authorization header:", req.headers.authorization);
+  const authHeader = req.headers["authorization"];
+  console.log(authHeader);
   const token = req.headers.authorization?.split(" ")[1];
   console.log("line 5", token);
   if (!token) {
