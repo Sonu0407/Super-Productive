@@ -37,25 +37,6 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     try {
       setLoading(true);
-
-      // const refreshResponse = await fetch(
-      //   "http://localhost:8000/api/refresh/",
-      //   {
-      //     method: "POST",
-      //     credentials: "include",
-      //   },
-      // );
-
-      // const refreshData = await refreshResponse.json();
-
-      // if (!refreshResponse.ok) {
-      //   setAuthUser(null);
-      //   return;
-      // }
-
-      // const newAccessToken = refreshData.accessToken;
-      // setAccessToken(newAccessToken);
-
       const url = "http://localhost:8000/api/auth/me";
       const response = await fetch(url, {
         method: "GET",
