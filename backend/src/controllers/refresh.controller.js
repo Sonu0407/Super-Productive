@@ -7,14 +7,20 @@ export const newRefreshAccessToken = async (req, res) => {
   try {
     const token = req.cookies.refreshToken;
 
+    console.log("token:", token);
+
     if (!token)
       return res.status(401).json({ error: "No Refresh token found" });
 
     const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
 
+    console.log("decoded:", decoded);
+
     const query = "SELECT * FROM refresh_token WHERE user_id = $1";
     const value = [decoded.userId];
     const result = await db.query(query, value);
+
+    console.log(result.rows);
 
     if (result.rows.length === 0) {
       return res.status(403).json({ error: "Refresh token not found" });

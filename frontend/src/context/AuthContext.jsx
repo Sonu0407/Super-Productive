@@ -29,27 +29,31 @@ export const AuthProvider = ({ children }) => {
 
       const newAccessToken = refreshData.accessToken;
       setAccessToken(newAccessToken);
+      await checkAuth(newAccessToken);
     };
     refreshToken();
-    checkAuth();
   }, []);
 
-  const checkAuth = async () => {
+  const checkAuth = async (token) => {
     try {
       setLoading(true);
+
       const url = "http://localhost:8000/api/auth/me";
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       });
+
       const data = await response.json();
+
       if (!response.ok) {
         throw new Error(data.error || data.message || "Something went wrong");
       }
+
       setAuthUser(data);
       navigate("/");
     } catch (error) {
