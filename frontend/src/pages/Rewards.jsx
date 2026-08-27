@@ -10,7 +10,6 @@ import {
 } from "react-icons/fa";
 import { AiFillAmazonCircle } from "react-icons/ai";
 import { SiZomato } from "react-icons/si";
-import { RiNetflixFill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 
 const wallet = Number(localStorage.getItem("wallet_balance"));

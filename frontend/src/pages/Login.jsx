@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { Apple } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
