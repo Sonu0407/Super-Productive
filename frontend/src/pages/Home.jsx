@@ -40,7 +40,6 @@ const Home = () => {
       return storedValue ? Number(storedValue) : 0;
     }
 
-    // New Day reset
     localStorage.setItem("earningsDate", today);
     localStorage.setItem("todayEarnings", 0);
 
