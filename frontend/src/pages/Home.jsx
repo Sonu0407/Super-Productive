@@ -30,7 +30,6 @@ const Home = () => {
     localStorage.setItem("todayCompletedTasks", completedTaskCount);
   }, [completedTaskCount]);
 
-  // Task panel's
   const [totalReward, setTotalReward] = useState(() => {
     const today = new Date().toDateString();
     const storedDate = localStorage.getItem("earningsDate");
