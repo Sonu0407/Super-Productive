@@ -6,7 +6,7 @@ import user from "../../public/images/user.png";
 
 const Navbar = ({ walletBalance }) => {
   const navigate = useNavigate();
-  const { checkAuth, authUser } = useContext(AuthContext);
+  const { setAuthUser, setAccessToken, authUser } = useContext(AuthContext);
   const [animateReward, setAnimateReward] = useState(false);
   const [rewardIncrease, setRewardIncrease] = useState(null);
   const prevBalance = useRef(walletBalance || 0);
@@ -47,7 +47,9 @@ const Navbar = ({ walletBalance }) => {
       }
 
       toast.success("Logout successful");
-      checkAuth();
+      // checkAuth();
+      setAuthUser(null);
+      setAccessToken(null);
       navigate("/login");
     } catch (error) {
       console.error("Error in handleLogout:", error);

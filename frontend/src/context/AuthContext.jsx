@@ -6,45 +6,59 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [authUser, setAuthUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const refreshToken = async () => {
-      const refreshResponse = await fetch(
-        "http://localhost:8000/api/refresh/",
-        {
-          method: "POST",
-          credentials: "include",
-        },
-      );
+      try {
+        const refreshResponse = await fetch(
+          "http://localhost:8000/api/refresh/",
+          {
+            method: "POST",
+            credentials: "include",
+          },
+        );
 
-      const refreshData = await refreshResponse.json();
+        if (!refreshResponse.ok) {
+          setAuthUser(null);
+          setAccessToken(null);
+          return;
+        }
 
-      if (!refreshResponse.ok) {
+        const refreshData = await refreshResponse.json();
+
+        const newAccessToken = refreshData.accessToken;
+        setAccessToken(newAccessToken);
+        await checkAuth(newAccessToken);
+      } catch (error) {
+        console.error("Failed to refresh token:", error);
         setAuthUser(null);
-        return;
+        setAccessToken(null);
+      } finally {
+        setLoading(false);
       }
-
-      const newAccessToken = refreshData.accessToken;
-      setAccessToken(newAccessToken);
-      await checkAuth(newAccessToken);
     };
     refreshToken();
   }, []);
 
   const checkAuth = async (token) => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       const url = "http://localhost:8000/api/auth/me";
+      const headers = { "Content-Type": "application/json" };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   Authorization: `Bearer ${token}`,
+        // },
+        headers,
       });
 
       const data = await response.json();
@@ -54,12 +68,10 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthUser(data);
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       console.error("Error in checkAuth:", error);
       setAuthUser(null);
-    } finally {
-      setLoading(false);
     }
   };
 

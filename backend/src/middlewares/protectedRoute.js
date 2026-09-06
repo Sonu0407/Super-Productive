@@ -1,14 +1,17 @@
 import jwt from "jsonwebtoken";
 
 const protectedRoute = (req, res, next) => {
-  console.log("Headers:", req.headers);
-  console.log("Authorization header:", req.headers.authorization);
-  const authHeader = req.headers["authorization"];
-  console.log(authHeader);
-  const token = req.headers.authorization?.split(" ")[1];
-  console.log("line 5", token);
+  // console.log("Headers:", req.headers);
+  // console.log("Authorization header:", req.headers.authorization);
+  // const authHeader = req.headers["authorization"];
+  // console.log(authHeader);
+  // const token = req.headers.authorization?.split(" ")[1];
+  // console.log("line 5", token);
+  const token =
+    req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_SECRET);

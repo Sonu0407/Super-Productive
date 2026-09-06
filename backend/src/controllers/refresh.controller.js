@@ -16,7 +16,8 @@ export const newRefreshAccessToken = async (req, res) => {
 
     console.log("decoded:", decoded);
 
-    const query = "SELECT * FROM refresh_token WHERE user_id = $1";
+    const query =
+      "SELECT * FROM refresh_token WHERE user_id = $1 ORDER BY expires_at DESC LIMIT 1";
     const value = [decoded.userId];
     const result = await db.query(query, value);
 
@@ -28,13 +29,21 @@ export const newRefreshAccessToken = async (req, res) => {
 
     const storedToken = result.rows[0];
 
+    //check database expiration
+    if (new Date() > new Date(storedToken.expires_at)) {
+      await db.query("DELETE FROM refresh_token WHERE user_id = $1", [
+        decoded.userId,
+      ]);
+      return res.status(403).json({ error: "Refresh Token Expired" });
+    }
+
     const isValid = await bcrypt.compare(token, storedToken.token);
 
     if (!isValid) {
       return res.status(403).json({ error: "Invalid refresh token" });
     }
 
-    const newAccessToken = generateAccessToken(decoded.userId);
+    const newAccessToken = generateAccessToken(decoded.userId, res);
 
     return res.status(200).json({
       message: "Access token refreshed successfully",

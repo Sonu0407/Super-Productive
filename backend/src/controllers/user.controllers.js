@@ -1,5 +1,6 @@
 import db from "../database/db.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -145,6 +146,17 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
+    const token = req.cookies.refreshToken;
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.REFRESH_SECRET);
+        await db.query("DELETE FROM refresh_token WHERE user_id = $1", [
+          decoded.userId,
+        ]);
+      } catch (error) {
+        // Token was already expired or invalid, continue logout
+      }
+    }
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
     return res.status(200).json({ message: "Logout successful" });
