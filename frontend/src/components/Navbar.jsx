@@ -47,7 +47,6 @@ const Navbar = ({ walletBalance }) => {
       }
 
       toast.success("Logout successful");
-      // checkAuth();
       setAuthUser(null);
       setAccessToken(null);
       navigate("/login");

@@ -44,8 +44,6 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async (token) => {
     try {
-      // setLoading(true);
-
       const url = "http://localhost:8000/api/auth/me";
       const headers = { "Content-Type": "application/json" };
       if (token) {
@@ -54,10 +52,6 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(url, {
         method: "GET",
         credentials: "include",
-        // headers: {
-        //   "Content-Type": "application/json",
-        //   Authorization: `Bearer ${token}`,
-        // },
         headers,
       });
 
@@ -68,7 +62,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       setAuthUser(data);
-      // navigate("/");
     } catch (error) {
       console.error("Error in checkAuth:", error);
       setAuthUser(null);

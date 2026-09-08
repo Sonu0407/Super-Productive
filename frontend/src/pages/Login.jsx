@@ -39,7 +39,6 @@ const Login = () => {
       toast.success("Login successful");
       setAccessToken(data.accessToken);
       setAuthUser(data.user);
-      // await checkAuth();
       navigate("/");
     } catch (error) {
       console.error("Error in handleLogin:", error);
