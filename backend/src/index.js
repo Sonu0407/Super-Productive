@@ -1,13 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
-import pg from "pg";
 dotenv.config();
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import userRouter from "./routes/userRoutes.js";
 import taskRouter from "./routes/taskRoutes.js";
-import timerRouter from "./routes/timerRoutes.js";
 import mailRouter from "./routes/mailRoutes.js";
 import refreshAccessTokenRouter from "./routes/refreshRoutes.js";
 import db from "./database/db.js";
@@ -15,7 +13,7 @@ import db from "./database/db.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// middleware
+// middlewares
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -27,12 +25,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/api/auth", userRouter);
 app.use("/api/tasks", taskRouter);
-app.use("/api/setTimer", timerRouter);
 // send mail
 app.use("/api/sendMail", mailRouter);
 // generate refreshToken
 app.use("/api/refresh", refreshAccessTokenRouter);
 
+//database connection
 db.connect()
   .then(() => {
     console.log("Database connected successfully");
