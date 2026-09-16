@@ -98,7 +98,7 @@ export const sendMail = async (req, res) => {
             <li>Visit the provider's website.</li>
             <li>Select your product or service.</li>
             <li>Enter the reward code and PIN during checkout.</li>
-            <li>Enjoy your reward 🎉</li>
+            <li>Enjoy your reward Yehh! 🎉</li>
             </ol>
 
             <p>
