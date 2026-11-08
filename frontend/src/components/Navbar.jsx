@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate , NavLink } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useContext, useState, useEffect, useRef } from "react";
 import AuthContext from "../context/AuthContext";
@@ -59,15 +59,16 @@ const Navbar = ({ walletBalance }) => {
   return (
     <div className="bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#4a4a4a] rounded-3xl px-6 py-4 flex items-center justify-between">
       <div className="flex gap-6 justify-center items-center">
-        <Link to="/" className="font-semibold text-gray-900 dark:text-white">
+        <NavLink to="/" className={({ isActive }) => `font-semibold ${ isActive ? "dark:text-white" : "text-gray-500 dark:text-[#c8c8c8]"}
+        `}>
           Home
-        </Link>
-
-        <Link to="/rewards" className="text-gray-500 dark:text-[#c8c8c8]">
+        </NavLink>
+ 
+        <NavLink to="/rewards" className={({ isActive }) => `font-semibold ${isActive ? "dark:text-white" : "text-gray-500 dark:text-[#c8c8c8]"}`}>
           Rewards
-        </Link>
+        </NavLink>
 
-        <button className="text-gray-500 dark:text-[#c8c8c8] flex gap-4 justify-center items-center">
+        <button className="text-red-500 dark:text-[#c8c8c8] flex gap-4 justify-center items-center font-semibold">
           <img src={user} alt="User" className="h-12 w-12" />
           {authUser.firstname + " " + authUser.lastname}
         </button>
@@ -123,7 +124,7 @@ const Navbar = ({ walletBalance }) => {
 
         <button
           onClick={handleLogout}
-          className="text-gray-500 dark:text-[#c8c8c8] cursor-pointer"
+          className="text-red-500 dark:text-red-500 cursor-pointer font-semibold"
         >
           Logout
         </button>
