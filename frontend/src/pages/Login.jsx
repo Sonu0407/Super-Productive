@@ -154,7 +154,7 @@ const Login = () => {
           <div className="flex items-center justify-between mb-5">
             <label className="flex items-center gap-2">
               <input type="checkbox" />
-              <span className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="text-sm text-gray-600 dark:text-gray-300  cursor-pointer">
                 Remember me
               </span>
             </label>
@@ -170,6 +170,8 @@ const Login = () => {
               dark:bg-[#2f2f2d]
               dark:border dark:border-[#575757]
               py-3 rounded-xl font-semibold text-lg
+              hover:bg-red-500 transition
+               cursor-pointer
             "
             onClick={handleLogin}
           >

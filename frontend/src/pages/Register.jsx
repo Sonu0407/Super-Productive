@@ -279,7 +279,8 @@ const Register = () => {
               dark:bg-[#2f2f2d]
               dark:border dark:border-[#575757]
               py-3 rounded-xl font-semibold text-lg
-              hover:bg-gray-900 transition
+              hover:bg-red-500 transition
+              cursor-pointer
             "
             onClick={handleRegister}
           >
